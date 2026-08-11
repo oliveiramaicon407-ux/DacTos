@@ -1,7 +1,13 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
+<!-- src/App.vue -->
 <template>
-  <HelloWorld />
+  <div id="app">
+    <!-- O Vue vai renderizar a página correspondente à rota aqui dentro -->
+    <router-view />
+  </div>
 </template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
