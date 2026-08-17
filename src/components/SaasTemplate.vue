@@ -19,7 +19,6 @@
 
         <div class="hidden md:flex items-center gap-4">
           <button class="h-10 px-4 py-2 text-sm font-medium hover:bg-gray-800/50 text-white rounded-md transition-all">Sign in</button>
-          <button class="h-10 px-5 text-sm font-medium bg-white text-black hover:bg-gray-100 rounded-md transition-all">Sign Up</button>
         </div>
 
         <!-- Botão Menu Mobile -->
@@ -37,7 +36,6 @@
           <a href="#documentation" @click="mobileMenuOpen = false" class="text-sm text-white/60 hover:text-white transition-colors py-2">Documentation</a>
           <div class="flex flex-col gap-2 pt-4 border-t border-gray-800/50">
             <button class="h-10 px-4 py-2 text-sm font-medium hover:bg-gray-800/50 text-white rounded-md text-left">Sign in</button>
-            <button class="h-10 px-5 text-sm font-medium bg-white text-black hover:bg-gray-100 rounded-md text-center">Sign Up</button>
           </div>
         </div>
       </div>

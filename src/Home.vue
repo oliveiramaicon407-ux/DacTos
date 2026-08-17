@@ -4,7 +4,7 @@
     
     <!-- Navbar / Cabeçalho -->
     <header class="border-b border-gray-100 px-6 py-4 flex justify-between items-center max-w-7xl mx-auto">
-      <div class="text-xl font-bold tracking-tight text-blue-600">DadoTech</div>
+      <div class="text-xl font-bold tracking-tight text-blue-600">DacTos</div>
       <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
         <!-- LINK CORRIGIDO: Agora aponta para a rota do SaasTemplate usando router-link -->
         <router-link to="/saas" class="text-blue-600 font-semibold hover:underline transition">
