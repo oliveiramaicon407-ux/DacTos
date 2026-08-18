@@ -11,7 +11,7 @@
         <router-link to="/saas" class="text-blue-600 font-semibold hover:underline transition">
           Acessar Plataforma
         </router-link>
-        <a href="#" class="hover:text-blue-600 transition">Sobre</a>
+        <a href="#sobre" class="hover:text-blue-600 transition">Sobre</a>
         <router-link to="/register" class="hover:text-blue-600 transition">Registre-se</router-link>
       </nav>
 
@@ -33,7 +33,7 @@
           <router-link to="/saas" class="text-blue-600 font-semibold py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">
             Acessar Plataforma
           </router-link>
-          <a href="#" class="hover:text-blue-600 py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">Sobre</a>
+          <a href="#sobre" class="hover:text-blue-600 py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">Sobre</a>
           <router-link to="/register" class="hover:text-blue-600 py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">Registre-se</router-link>
         </div>
       </transition>
@@ -55,6 +55,27 @@
         <p class="mt-4 sm:mt-6 text-blue-200 text-sm sm:text-base md:text-lg max-w-3xl mx-auto font-medium drop-shadow">
           Nossa plataforma oferece insights estratégicos em tempo real, permitindo que você tome decisões informadas e impulsione o crescimento do seu negócio.
         </p>
+      </div>
+    </section>
+
+    <!-- Seção Sobre Nós -->
+    <section id="sobre" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto w-full border-b border-gray-100">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Sobre A DacTos</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-2 mb-4">
+            Transformando dados brutos em decisões inteligentes
+          </h2>
+          <p class="text-gray-600 mb-4 leading-relaxed">
+            A DacTos nasceu para simplificar a análise de dados e tornar a inteligência de negócios acessível para empresas de todos os tamanhos.
+          </p>
+          <p class="text-gray-600 leading-relaxed">
+            Nossa missão é eliminar a complexidade no tratamento de planilhas e bancos de dados NoSQL, entregando dashboards claros e insights em tempo real.
+          </p>
+        </div>
+        <div class="rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Nossa Equipe" class="w-full h-full object-cover">
+        </div>
       </div>
     </section>
 
