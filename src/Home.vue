@@ -3,8 +3,10 @@
   <div class="min-h-screen bg-white text-gray-800 font-sans w-full overflow-x-hidden">
     
     <!-- Navbar / Cabeçalho -->
-    <header class="border-b border-gray-100 px-6 py-4 flex justify-between items-center max-w-7xl mx-auto w-full">
+    <header class="border-b border-gray-100 py-4 px-4 sm:px-6 max-w-7xl mx-auto w-full flex justify-between items-center relative">
       <div class="text-xl font-bold tracking-tight text-blue-600">DacTos</div>
+      
+      <!-- Menu Desktop -->
       <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
         <router-link to="/saas" class="text-blue-600 font-semibold hover:underline transition">
           Acessar Plataforma
@@ -12,36 +14,55 @@
         <a href="#" class="hover:text-blue-600 transition">Sobre</a>
         <router-link to="/register" class="hover:text-blue-600 transition">Registre-se</router-link>
       </nav>
+
+      <!-- Botão Menu Mobile -->
+      <button 
+        @click="isMenuOpen = !isMenuOpen" 
+        class="md:hidden text-gray-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition"
+        aria-label="Abrir menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path v-if="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Dropdown Mobile -->
+      <transition enter-active-class="transition duration-150 ease-out" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+        <div v-if="isMenuOpen" class="absolute top-full left-0 w-full bg-white border-b border-gray-100 shadow-lg md:hidden z-50 flex flex-col p-4 space-y-3 font-medium text-sm text-gray-700">
+          <router-link to="/saas" class="text-blue-600 font-semibold py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">
+            Acessar Plataforma
+          </router-link>
+          <a href="#" class="hover:text-blue-600 py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">Sobre</a>
+          <router-link to="/register" class="hover:text-blue-600 py-1 hover:bg-gray-50 rounded px-2" @click="isMenuOpen = false">Registre-se</router-link>
+        </div>
+      </transition>
     </header>
 
-    <!-- Hero Section (Preenche 100% da largura sem bordas laterais) -->
-    <section class="relative w-full min-h-[500px] lg:min-h-[600px] flex items-center justify-center overflow-hidden">
-      <!-- Background cobrindo toda a extensão sem lacunas -->
-      <div 
-        class="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full" 
-        style="background-image: url('./assets/banco-de-dados-nosql.jpg');">
-        <img src='./assets/banco-de-dados-nosql.jpg' alt='Hero Image' class="w-full h-full object-cover">
-      </div>
+    <!-- Hero Section -->
+    <section class="relative w-full min-h-[450px] sm:min-h-[500px] lg:min-h-[600px] flex items-center justify-center overflow-hidden">
+      <!-- Image Background -->
+      <img src="./assets/banco-de-dados-nosql.jpg" alt="Hero Image" class="absolute inset-0 w-full h-full object-cover">
 
-      <!-- Overlay escuro para leitura do texto -->
+      <!-- Overlay escuro -->
       <div class="absolute inset-0 bg-black/60"></div>
 
-      <!-- Conteúdo principal do Hero -->
-      <div class="relative max-w-5xl mx-auto text-center z-10 px-6 py-20">
-        <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-blue-500 drop-shadow-lg">
+      <!-- Conteúdo do Hero -->
+      <div class="relative max-w-5xl mx-auto text-center z-10 px-4 sm:px-6 py-16 sm:py-20">
+        <h1 class="text-2xl sm:text-4xl md:text-6xl font-extrabold tracking-tight leading-tight text-white drop-shadow-lg">
           Experencie a transformação de dados digitais
         </h1>
-        <p class="mt-6 text-blue-200 text-base md:text-lg max-w-3xl mx-auto font-medium drop-shadow">
+        <p class="mt-4 sm:mt-6 text-blue-200 text-sm sm:text-base md:text-lg max-w-3xl mx-auto font-medium drop-shadow">
           Nossa plataforma oferece insights estratégicos em tempo real, permitindo que você tome decisões informadas e impulsione o crescimento do seu negócio.
         </p>
       </div>
     </section>
 
     <!-- Seção de Recursos / Grade de Imagens -->
-    <section class="py-16 px-6 max-w-7xl mx-auto w-full">
-      <div class="text-center mb-12">
+    <section class="py-12 sm:py-16 px-4 sm:px-6 max-w-7xl mx-auto w-full">
+      <div class="text-center mb-8 sm:mb-12">
         <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Nosso Recurso</span>
-        <h2 class="text-2xl md:text-4xl font-bold text-black-900 mt-2">
+        <h2 class="text-xl sm:text-2xl md:text-4xl font-bold text-gray-900 mt-2">
           A PLATAFORMA DEFINITIVA PARA ANÁLISE DE CLIENTES
         </h2>
       </div>
@@ -82,41 +103,41 @@
     </section>
 
     <!-- Seção de Call to Action (Upload) -->
-    <section class="bg-gray-50 py-16 px-6 border-y border-gray-100 w-full">
+    <section class="bg-gray-50 py-12 sm:py-16 px-4 sm:px-6 border-y border-gray-100 w-full">
       <div class="max-w-3xl mx-auto text-center">
         <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Upload</span>
-        <h2 class="text-2xl md:text-3xl font-bold text-black mt-2 mb-6">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mt-2 mb-6">
           Faça upload de suas planilhas e obtenha insights estratégicos instantaneamente.
         </h2>
-        <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition">
+        <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition">
           Selecionar Arquivo
         </button>
       </div>
     </section>
 
     <!-- Banner Inferior -->
-    <section class="relative bg-slate-800 text-white py-20 px-6 overflow-hidden w-full">
+    <section class="relative bg-slate-800 text-white py-16 sm:py-20 px-4 sm:px-6 overflow-hidden w-full">
       <div 
         class="absolute inset-0 opacity-20 bg-cover bg-center w-full h-full"
         style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80');">
       </div>
       <div class="relative max-w-4xl mx-auto text-center z-10 flex flex-col items-center">
-        <p class="text-sm uppercase tracking-widest text-blue-400 font-semibold mb-2">Lançamento</p>
-        <h2 class="text-4xl md:text-6xl font-black tracking-tight mb-4">DacTos 2026</h2>
-        <p class="text-gray-300 max-w-md text-sm md:text-base">
+        <p class="text-xs sm:text-sm uppercase tracking-widest text-blue-400 font-semibold mb-2">Lançamento</p>
+        <h2 class="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight mb-4">DacTos 2026</h2>
+        <p class="text-gray-300 max-w-md text-xs sm:text-sm md:text-base">
           A nova era do processamento inteligente de dados. Uma interface fluida construída para escalar sua operação.
         </p>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-950 text-gray-400 py-12 px-6 text-xs border-t border-gray-900 w-full">
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <footer class="bg-gray-950 text-gray-400 py-8 sm:py-12 px-4 sm:px-6 text-xs border-t border-gray-900 w-full">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6 text-center md:text-left">
         <div>
           <p class="font-semibold text-gray-300 text-sm mb-1">DacTos</p>
           <p>© 2026 Todos os direitos reservados.</p>
         </div>
-        <div class="flex space-x-6 text-gray-500">
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-6 text-gray-500">
           <p>suporte@dactos.com</p>
           <p>(00) 1234-5678</p>
         </div>
@@ -128,6 +149,11 @@
 
 <script>
 export default {
-  name: 'HomeView'
+  name: 'HomeView',
+  data() {
+    return {
+      isMenuOpen: false
+    }
+  }
 }
 </script>
