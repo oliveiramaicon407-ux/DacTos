@@ -14,8 +14,7 @@
 
         <div class="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <a href="#getting-started" class="text-sm text-white/60 hover:text-white transition-colors">Getting started</a>
-          <a href="#components" class="text-sm text-white/60 hover:text-white transition-colors">Components</a>
-          <a href="#documentation" class="text-sm text-white/60 hover:text-white transition-colors">Documentation</a>
+          <a href="#documentation" class="text-sm text-white/60 hover:text-white transition-colors">Documentação</a>
         </div>
 
         <div class="hidden md:flex items-center gap-4">
@@ -33,8 +32,7 @@
       <div v-if="mobileMenuOpen" class="md:hidden bg-black/95 backdrop-blur-md border-t border-gray-800/50">
         <div class="px-6 py-4 flex flex-col gap-4">
           <a href="#getting-started" @click="mobileMenuOpen = false" class="text-sm text-white/60 hover:text-white transition-colors py-2">Getting started</a>
-          <a href="#components" @click="mobileMenuOpen = false" class="text-sm text-white/60 hover:text-white transition-colors py-2">Components</a>
-          <a href="#documentation" @click="mobileMenuOpen = false" class="text-sm text-white/60 hover:text-white transition-colors py-2">Documentation</a>
+          <a href="#documentation" @click="mobileMenuOpen = false" class="text-sm text-white/60 hover:text-white transition-colors py-2">Documentação</a>
           <div class="flex flex-col gap-2 pt-4 border-t border-gray-800/50">
             <button class="h-10 px-4 py-2 text-sm font-medium hover:bg-gray-800/50 text-white rounded-md text-left">Entrar</button>
           </div>
@@ -86,6 +84,6 @@ export default {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.8s ease-out forwards;
 }
 </style>

@@ -30,7 +30,7 @@ const count = ref(0)
       <svg class="icon" role="presentation" aria-hidden="true">
         <use href="/icons.svg#documentation-icon"></use>
       </svg>
-      <h2>Documentation</h2>
+      <h2>Documentação</h2>
       <p>Your questions, answered</p>
       <ul>
         <li>
