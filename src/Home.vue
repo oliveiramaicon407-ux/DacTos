@@ -123,19 +123,6 @@
       </div>
     </section>
 
-    <!-- Seção de Call to Action (Upload) -->
-    <section class="bg-gray-50 py-12 sm:py-16 px-4 sm:px-6 border-y border-gray-100 w-full">
-      <div class="max-w-3xl mx-auto text-center">
-        <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Upload</span>
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mt-2 mb-6">
-          Faça upload de suas planilhas e obtenha insights estratégicos instantaneamente.
-        </h2>
-        <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition">
-          Selecionar Arquivo
-        </button>
-      </div>
-    </section>
-
     <!-- Banner Inferior -->
     <section class="relative bg-slate-800 text-white py-16 sm:py-20 px-4 sm:px-6 overflow-hidden w-full">
       <div 
