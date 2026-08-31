@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
-import router from './router'
+import router from './router' // Garanta que o caminho aponta corretamente para o seu router
+import './style.css' // Importa o Tailwind CSS
 
 const app = createApp(App)
 
-app.use(router) // Ativa o sistema de rotas no Vue
+app.use(router)
 app.mount('#app')
