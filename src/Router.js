@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './Home.vue'
 import SaasTemplate from './components/SaasTemplate.vue'
+import Login from './components/Login.vue'
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     path: '/saas',
     name: 'SaasTemplate',
     component: SaasTemplate
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 
