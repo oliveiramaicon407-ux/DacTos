@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router' // Garanta que o caminho aponta corretamente para o seu router
-import './style.css' // Importa o Tailwind CSS
+import Router from './Router.js'
+import './style.css'
 
 const app = createApp(App)
 
-app.use(router)
+app.use(Router)
 app.mount('#app')
