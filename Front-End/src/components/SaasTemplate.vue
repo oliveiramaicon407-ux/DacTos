@@ -5,7 +5,6 @@
     <!-- Navegação (Menu Superior) -->
     <header class="fixed top-0 w-full z-50 border-b border-blue-800/50 bg-black/80 backdrop-blur-md">
       <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">       
-         
         
         <!-- LINK ADICIONADO AQUI: Permite voltar para a página Home -->
         <router-link to="/" class="text-xl font-bold text-blue-500 hover:text-gray-300 transition-colors z-10">
@@ -44,7 +43,6 @@
     <section class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-32 pb-20 overflow-hidden animate-fade-in">
       <div class="flex flex-col items-center justify-center w-full max-w-7xl text-center">
         
-
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-b from-white via-white to-white/60 bg-clip-text text-transparent">
           Desenvolva a interface do seu SaaS de forma fluida
         </h1>
@@ -63,19 +61,47 @@
         </div>
       </div>
     </section>
-  </div>
 
-      <section class="bg-gray-50 py-12 sm:py-16 px-4 sm:px-6 border-y border-gray-100 w-full">
+    <!-- Seção de Upload -->
+    <section class="bg-gray-50 py-12 sm:py-16 px-4 sm:px-6 border-y border-gray-100 w-full text-gray-900">
       <div class="max-w-3xl mx-auto text-center">
         <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">Upload</span>
-        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mt-2 mb-6">
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold mt-2 mb-6">
           Faça upload de suas planilhas e obtenha insights estratégicos instantaneamente.
         </h2>
-        <button class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition">
-          Selecionar Arquivo
+
+        <!-- Input de arquivo escondido que é disparado pelo botão -->
+        <input 
+          type="file" 
+          ref="fileInput" 
+          @change="handleFileUpload" 
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+          class="hidden" 
+        />
+
+        <button 
+          @click="triggerFileInput" 
+          class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-lg shadow-md transition cursor-pointer"
+        >
+          {{ selectedFileName ? 'Trocar Arquivo' : 'Selecionar Arquivo' }}
         </button>
+
+        <!-- Exibe o nome do arquivo selecionado e botão de envio -->
+        <div v-if="selectedFileName" class="mt-4 flex flex-col items-center gap-2">
+          <p class="text-sm text-gray-700 font-medium">
+            Arquivo selecionado: <span class="text-blue-600 font-bold">{{ selectedFileName }}</span>
+          </p>
+          <button 
+            @click="uploadFile" 
+            class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-5 py-2 rounded-lg shadow transition"
+          >
+            Enviar para o Sistema
+          </button>
+        </div>
       </div>
     </section>
+
+  </div>
 </template>
 
 <script>
@@ -83,7 +109,34 @@ export default {
   name: 'DacTosTemplate',
   data() {
     return {
-      mobileMenuOpen: false
+      mobileMenuOpen: false,
+      selectedFile: null,
+      selectedFileName: ''
+    }
+  },
+  methods: {
+    // Aciona o input de arquivo invisível
+    triggerFileInput() {
+      this.$refs.fileInput.click()
+    },
+    // Captura o arquivo escolhido pelo usuário
+    handleFileUpload(event) {
+      const file = event.target.files[0]
+      if (file) {
+        this.selectedFile = file
+        this.selectedFileName = file.name
+      }
+    },
+    // Função chamada ao clicar em enviar
+    uploadFile() {
+      if (!this.selectedFile) return
+      
+      // Aqui você integrará com o Supabase ou sua lógica de envio
+      alert(`Arquivo "${this.selectedFileName}" pronto para ser processado!`)
+      
+      // Exemplo de reset após envio:
+      // this.selectedFile = null
+      // this.selectedFileName = ''
     }
   }
 }

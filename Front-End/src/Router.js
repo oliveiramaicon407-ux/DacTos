@@ -2,15 +2,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // Páginas Públicas / Isoladas (SEM layout)
 import Home from './Home.vue'
+import Login from './Login.vue'
+import Register from './Register.vue'
 import SaasTemplate from './components/SaasTemplate.vue'
 
 // Layout do Painel e Páginas Internas
+import AppLayout from './layouts/AppLayout.vue'
 import UploadView from './Upload.vue'
 import RelatoriosView from './Relatorios.vue'
 import GraficosView from './Graficos.vue'
-import RegisterView from './Register.vue' // <-- Adicionado aqui para corrigir o erro que ia estourar logo em seguida
-import Login from './Login.vue'
-import AppLayout from './layouts/AppLayout.vue'
 
 const routes = [
   { 
@@ -22,6 +22,11 @@ const routes = [
     path: '/login', 
     name: 'Login', 
     component: Login 
+  },
+  { 
+    path: '/register', 
+    name: 'Register', 
+    component: Register 
   },
   {
     path: '/saas',
@@ -42,11 +47,6 @@ const routes = [
         path: 'relatorios', 
         name: 'Relatorios', 
         component: RelatoriosView 
-      },
-      {
-        path: 'register',
-        name: 'Register',
-        component: RegisterView
       },
       { 
         path: 'graficos', 
