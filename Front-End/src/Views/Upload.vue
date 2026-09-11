@@ -1,4 +1,3 @@
-<!-- src/Views/Upload.vue -->
 <script setup>
 import { useUploadStore } from '../stores/uploadStore'
 
@@ -7,7 +6,7 @@ const store = useUploadStore()
 function handleFileChange(event) {
   const file = event.target.files[0]
   if (file) {
-    store.lerArquivo(file)
+    store.selecionarArquivo(file)
   }
 }
 </script>
@@ -15,7 +14,6 @@ function handleFileChange(event) {
 <template>
   <div class="p-6 md:p-10 max-w-7xl mx-auto space-y-8 animate-fade-in">
     
-    <!-- Cabeçalho da Página -->
     <div class="text-center md:text-left">
       <span class="px-3 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-950/60 border border-blue-800/50 rounded-full inline-block mb-3">
         Pipeline de Ingestão
@@ -28,15 +26,13 @@ function handleFileChange(event) {
       </p>
     </div>
 
-    <!-- Grid do Form + Resumo -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       
-      <!-- Zona de Drop / Input de Arquivo -->
       <div class="lg:col-span-2 rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl">
         <h2 class="text-sm font-semibold text-zinc-300 mb-4">Selecione o arquivo de dados</h2>
         
         <label class="relative flex flex-col items-center justify-center border-2 border-dashed border-zinc-800 hover:border-blue-500/50 rounded-xl p-10 cursor-pointer transition-all bg-black/40 group">
-          <input type="file" accept=".csv, .xlsx, .xls" class="hidden" @change="handleFileChange" />
+          <input type="file" accept=".csv, .xlsx" class="hidden" @change="handleFileChange" />
           
           <div class="w-14 h-14 rounded-full bg-blue-950/40 border border-blue-800/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform mb-4">
             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,35 +41,44 @@ function handleFileChange(event) {
           </div>
 
           <p class="text-sm font-semibold text-zinc-200 group-hover:text-blue-400 transition-colors">
-            {{ store.arquivo ? store.arquivo.name : 'Clique para selecionar uma planilha' }}
+            {{ store.arquivo ? store.arquivo.name : 'Clique para selecionar uma planilha (.xlsx, .csv)' }}
           </p>
-          <p class="text-xs text-zinc-500 mt-1">Formatos suportados: .csv, .xlsx, .xls</p>
+          <p class="text-xs text-zinc-500 mt-1">Formatos suportados: .csv, .xlsx</p>
         </label>
 
-        <!-- Mensagem de Erro -->
+        <p v-if="store.carregando" class="mt-4 text-xs text-amber-400 animate-pulse font-semibold">
+          Lendo arquivo... Por favor, aguarde.
+        </p>
+
         <div v-if="store.erro" class="mt-4 p-3 bg-red-950/50 border border-red-800/50 rounded-lg text-xs text-red-400">
           {{ store.erro }}
         </div>
       </div>
 
-      <!-- Resumo da Ingestão -->
-      <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl space-y-6">
+      <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl space-y-5">
         <h2 class="text-xs font-semibold uppercase tracking-wider text-blue-400 border-b border-zinc-800/80 pb-3">
           Resumo da Ingestão
         </h2>
 
         <div>
-          <span class="text-3xl font-black font-mono text-blue-500 block">
-            {{ store.totalLinhas }}
+          <span class="text-2xl font-black font-mono text-blue-500 block">
+            {{ store.totalClientes }}
           </span>
-          <span class="text-xs text-zinc-400">Linhas processadas</span>
+          <span class="text-xs text-zinc-400">Total de clientes (linhas válidas)</span>
         </div>
 
         <div>
-          <span class="text-3xl font-black font-mono text-blue-500 block">
-            {{ store.totalColunas }}
+          <span class="text-2xl font-black font-mono text-emerald-400 block">
+            {{ store.clientesNivelA }}
           </span>
-          <span class="text-xs text-zinc-400">Colunas identificadas</span>
+          <span class="text-xs text-zinc-400">Clientes Nível A</span>
+        </div>
+
+        <div>
+          <span class="text-2xl font-black font-mono text-red-400 block">
+            {{ store.totalErros }}
+          </span>
+          <span class="text-xs text-zinc-400">Erros encontrados</span>
         </div>
 
         <button 
@@ -87,29 +92,28 @@ function handleFileChange(event) {
 
     </div>
 
-    <!-- Prévia da Tabela de Dados (quando houver arquivo) -->
-    <div v-if="store.dadosTratados.length > 0" class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl overflow-hidden">
-      <h2 class="text-sm font-semibold text-zinc-300 mb-4">Prévia dos Dados Extraídos</h2>
+    <div v-if="store.temDados" class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl overflow-hidden animate-fade-in">
+      <h2 class="text-sm font-semibold text-zinc-300 mb-4">Prévia dos Dados Tratados</h2>
       
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs text-zinc-400">
           <thead class="bg-zinc-900 text-zinc-200 font-semibold border-b border-zinc-800">
             <tr>
-              <th v-for="col in store.colunas" :key="col" class="p-3">
-                {{ col }}
+              <th v-for="coluna in store.colunas" :key="coluna" class="p-3">
+                {{ coluna }}
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-zinc-800/50">
-            <tr v-for="(row, idx) in store.dadosTratados.slice(0, 5)" :key="idx" class="hover:bg-zinc-900/50 transition-colors">
-              <td v-for="col in store.colunas" :key="col" class="p-3 text-zinc-300">
-                {{ row[col] }}
+            <tr v-for="(cliente, index) in store.dadosTratados.slice(0, 10)" :key="index" class="hover:bg-zinc-900/50 transition-colors">
+              <td v-for="coluna in store.colunas" :key="coluna" class="p-3 text-zinc-300">
+                {{ cliente[coluna] }}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="text-[10px] text-zinc-500 mt-3 text-right">Exibindo as primeiras 5 linhas de {{ store.totalLinhas }} registros.</p>
+      <p class="text-[10px] text-zinc-500 mt-3 text-right">Exibindo os primeiros registros de {{ store.totalClientes }} processados.</p>
     </div>
 
   </div>
