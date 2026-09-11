@@ -14,7 +14,12 @@
           <a href="#sobre" class="hover:text-white transition-colors">Sobre</a>
           <a href="#recursos" class="hover:text-white transition-colors">Recursos</a>
           <router-link to="/register" class="hover:text-white transition-colors">Registre-se</router-link>
-          <router-link to="/saas" class="h-9 px-4 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all flex items-center shadow-lg shadow-blue-600/20">
+          
+          <!-- Botão Navbar Desktop -->
+          <router-link 
+            to="/saas" 
+            class="h-9 px-4 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/40 flex items-center cursor-pointer"
+          >
             Acessar Plataforma
           </router-link>
         </nav>
@@ -44,7 +49,13 @@
             <a href="#sobre" class="hover:text-white py-1" @click="isMenuOpen = false">Sobre</a>
             <a href="#recursos" class="hover:text-white py-1" @click="isMenuOpen = false">Recursos</a>
             <router-link to="/register" class="hover:text-white py-1" @click="isMenuOpen = false">Registre-se</router-link>
-            <router-link to="/saas" class="w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded-md" @click="isMenuOpen = false">
+            
+            <!-- Botão Navbar Mobile -->
+            <router-link 
+              to="/saas" 
+              class="w-full text-center bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded-md transition-all duration-300 transform active:scale-95" 
+              @click="isMenuOpen = false"
+            >
               Acessar Plataforma
             </router-link>
           </div>
@@ -78,10 +89,19 @@
         </p>
 
         <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <router-link to="/saas" class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all shadow-lg shadow-blue-600/25">
+          <!-- Botão Hero (Testar Plataforma) -->
+          <router-link 
+            to="/saas" 
+            class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/50 cursor-pointer"
+          >
             Testar Plataforma
           </router-link>
-          <a href="#sobre" class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-sm font-medium bg-zinc-900 text-gray-300 hover:bg-zinc-800 hover:text-white rounded-lg transition-all border border-zinc-800">
+          
+          <!-- Botão Secundário Hero (Saiba Mais) -->
+          <a 
+            href="#sobre" 
+            class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-sm font-medium bg-zinc-900 text-gray-300 hover:bg-zinc-800 hover:text-white rounded-lg transition-all duration-300 border border-zinc-800 hover:border-zinc-700 transform hover:scale-105"
+          >
             Saiba Mais
           </a>
         </div>
@@ -104,7 +124,7 @@
           </p>
         </div>
 
-        <!-- Componente Visual Tech (Substitui foto genérica) -->
+        <!-- Componente Visual Tech -->
         <div class="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800 backdrop-blur-sm relative overflow-hidden shadow-2xl">
           <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-6">
             <div class="flex gap-2">
@@ -189,7 +209,12 @@
         <p class="text-gray-400 max-w-md text-sm mb-8 leading-relaxed">
           A nova era do processamento inteligente de dados. Uma interface fluida construída para escalar sua operação.
         </p>
-        <router-link to="/saas" class="h-11 px-8 flex items-center justify-center text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all shadow-lg shadow-blue-600/20">
+        
+        <!-- Botão CTA Inferior -->
+        <router-link 
+          to="/saas" 
+          class="h-11 px-8 flex items-center justify-center text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 shadow-lg shadow-blue-600/20 hover:shadow-blue-500/50 cursor-pointer"
+        >
           Acessar a Aplicação Agora
         </router-link>
       </div>

@@ -1,6 +1,6 @@
 <!-- src/components/SaasTemplate.vue -->
 <template>
-  <div class="min-h-screen bg-black text-white font-sans antialiased">
+  <div class="min-h-screen bg-black text-white font-sans antialiased selection:bg-blue-600 selection:text-white">
     
     <!-- Navegação -->
     <header class="fixed top-0 w-full z-50 border-b border-blue-900/40 bg-black/80 backdrop-blur-md">
@@ -11,12 +11,15 @@
         </router-link>
 
         <div class="hidden md:flex items-center gap-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <a href="#upload-section" class="text-sm text-gray-300 hover:text-white transition-colors">Começar</a>
-          <a href="#upload-section" class="text-sm text-gray-300 hover:text-white transition-colors">Documentação</a>
+          <a href="#recursos" class="text-sm text-gray-300 hover:text-white transition-colors">Recursos</a>
+          <router-link to="/login" class="text-sm text-gray-300 hover:text-white transition-colors">Pipeline</router-link>
         </div>
 
         <div class="hidden md:flex items-center gap-4">
-          <button @click="$router.push('/login')" class="h-10 px-5 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all shadow-lg cursor-pointer">
+          <button 
+            @click="$router.push('/login')" 
+            class="h-10 px-5 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-md transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 shadow-lg hover:shadow-blue-500/50 cursor-pointer"
+          >
             Entrar
           </button>
         </div>
@@ -31,17 +34,22 @@
       <!-- Menu Mobile -->
       <div v-if="mobileMenuOpen" class="md:hidden bg-zinc-950 border-t border-zinc-800">
         <div class="px-6 py-4 flex flex-col gap-4">
-          <a href="#upload-section" @click="mobileMenuOpen = false" class="text-sm text-gray-300 hover:text-white py-2">Começar</a>
-          <a href="#upload-section" @click="mobileMenuOpen = false" class="text-sm text-gray-300 hover:text-white py-2">Documentação</a>
+          <a href="#recursos" @click="mobileMenuOpen = false" class="text-sm text-gray-300 hover:text-white py-2">Recursos</a>
+          <router-link to="/login" @click="mobileMenuOpen = false" class="text-sm text-gray-300 hover:text-white py-2">Pipeline</router-link>
           <div class="flex flex-col gap-2 pt-4 border-t border-zinc-800">
-            <button @click="$router.push('/login')" class="h-10 px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md text-left">Entrar</button>
+            <button 
+              @click="$router.push('/login')" 
+              class="h-10 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-md text-left transition-all duration-300"
+            >
+              Entrar
+            </button>
           </div>
         </div>
       </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="relative min-h-[80vh] flex flex-col items-center justify-center px-6 pt-32 pb-16 overflow-hidden animate-fade-in">
+    <section class="relative min-h-[85vh] flex flex-col items-center justify-center px-6 pt-32 pb-16 overflow-hidden animate-fade-in">
       <div class="flex flex-col items-center justify-center w-full max-w-4xl text-center">
         
         <span class="px-3 py-1 text-xs font-semibold tracking-wider text-blue-400 bg-blue-950/60 border border-blue-800/50 rounded-full mb-6">
@@ -53,68 +61,70 @@
         </h1>
         
         <p class="text-base md:text-lg text-gray-400 max-w-2xl mb-8 leading-relaxed">
-          Faça upload de arquivos CSV ou Excel e visualize métricas, gráficos e análises detalhadas de forma automatizada.
+          Faça a ingestão de arquivos CSV ou Excel e visualize métricas, relatórios e pipelines detalhados de forma automatizada.
         </p>
 
-        <div class="flex flex-row items-center gap-4">
-          <a href="#upload-section" class="h-12 px-8 flex items-center justify-center text-base font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all shadow-lg hover:shadow-blue-500/25">
+        <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+          <!-- Botão redirecionando para a rota interna da Sidebar -->
+          <router-link 
+            to="/login" 
+            class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-base font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 shadow-lg hover:shadow-blue-500/50"
+          >
             Analisar Agora
-          </a>
-          <a href="#upload-section" class="h-12 px-8 flex items-center justify-center text-base font-medium bg-zinc-900 text-gray-300 hover:bg-zinc-800 hover:text-white rounded-lg transition-all border border-zinc-800">
-            Ver Documentação
+          </router-link>
+
+          <a 
+            href="#recursos" 
+            class="w-full sm:w-auto h-12 px-8 flex items-center justify-center text-base font-medium bg-zinc-900 text-gray-300 hover:bg-zinc-800 hover:text-white rounded-lg transition-all duration-300 border border-zinc-800 hover:border-zinc-700 transform hover:scale-105"
+          >
+            Conhecer Recursos
           </a>
         </div>
       </div>
     </section>
 
-    <!-- Seção de Upload (Tema Dark Padronizado) -->
-    <section id="upload-section" class="bg-zinc-950 py-16 px-4 sm:px-6 border-t border-zinc-800/80 w-full">
-      <div class="max-w-2xl mx-auto text-center">
-        <h2 class="text-2xl sm:text-3xl font-bold mb-3 text-white">
-          Upload de Dados
-        </h2>
-        <p class="text-sm text-gray-400 mb-8">
-          Suporta formatos .csv, .xlsx e .xls
-        </p>
-
-        <input 
-          type="file" 
-          ref="fileInput" 
-          @change="handleFileUpload" 
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
-          class="hidden" 
-        />
-
-        <!-- Zona de Drop/Upload -->
-        <div 
-          @click="triggerFileInput"
-          class="border-2 border-dashed border-zinc-700 hover:border-blue-500 bg-zinc-900/50 hover:bg-zinc-900 rounded-xl p-8 transition-all cursor-pointer flex flex-col items-center justify-center gap-4 group"
-        >
-          <div class="p-4 bg-zinc-800/80 rounded-full group-hover:bg-blue-600/10 transition-colors">
-            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-            </svg>
-          </div>
-
-          <div>
-            <p class="text-base font-medium text-gray-200">
-              {{ selectedFileName ? 'Clique para trocar o arquivo' : 'Clique para selecionar uma planilha' }}
-            </p>
-            <p v-if="selectedFileName" class="text-xs text-blue-400 font-semibold mt-1">
-              Selecionado: {{ selectedFileName }}
-            </p>
-          </div>
+    <!-- Seção de Recursos -->
+    <section id="recursos" class="bg-zinc-950 py-20 px-4 sm:px-6 border-t border-zinc-800/80 w-full">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
+            Por que usar o DacTos Engine?
+          </h2>
+          <p class="text-sm text-gray-400 max-w-xl mx-auto">
+            Uma plataforma de ingestão construída para performance, clareza e alta reatividade de dados.
+          </p>
         </div>
 
-        <!-- Ação de Processamento -->
-        <div v-if="selectedFileName" class="mt-6 flex justify-center">
-          <button 
-            @click="uploadFile" 
-            class="bg-green-600 hover:bg-green-500 text-white font-medium px-6 py-3 rounded-lg shadow-lg shadow-green-900/20 transition cursor-pointer flex items-center gap-2"
-          >
-            <span>Processar Dados</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-          </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-6 rounded-2xl bg-black border border-zinc-800/80 hover:border-blue-500/50 transition-all duration-300 group hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-blue-950/60 border border-blue-800/40 flex items-center justify-center mb-6 group-hover:bg-blue-600/20 transition-colors">
+              <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Processamento Rápido</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Análise e leitura de colunas instantânea diretamente na memória do navegador.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-black border border-zinc-800/80 hover:border-blue-500/50 transition-all duration-300 group hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-blue-950/60 border border-blue-800/40 flex items-center justify-center mb-6 group-hover:bg-blue-600/20 transition-colors">
+              <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Prévia em Tempo Real</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Visualize dados estruturados, contagem de registros e colunas em uma tabela limpa.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-black border border-zinc-800/80 hover:border-blue-500/50 transition-all duration-300 group hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-blue-950/60 border border-blue-800/40 flex items-center justify-center mb-6 group-hover:bg-blue-600/20 transition-colors">
+              <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s-8-1.79-8-4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Estado Reativo (Pinia)</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">
+              Persistência de dados consistente para transições fluidas entre relatórios.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -127,28 +137,7 @@ export default {
   name: 'SaasTemplate',
   data() {
     return {
-      mobileMenuOpen: false,
-      selectedFile: null,
-      selectedFileName: ''
-    }
-  },
-  methods: {
-    triggerFileInput() {
-      this.$refs.fileInput.click()
-    },
-    handleFileUpload(event) {
-      const file = event.target.files[0]
-      if (file) {
-        this.selectedFile = file
-        this.selectedFileName = file.name
-      }
-      event.target.value = ''
-    },
-    uploadFile() {
-      if (!this.selectedFile) return
-      
-      alert(`Arquivo "${this.selectedFileName}" pronto para ser processado!`)
-      // Integração com Supabase Storage / Edge Functions pode entrar aqui
+      mobileMenuOpen: false
     }
   }
 }

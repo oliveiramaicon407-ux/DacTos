@@ -8,7 +8,7 @@ import SaasTemplate from './components/SaasTemplate.vue'
 
 // Layout do Painel e Páginas Internas
 import AppLayout from './layouts/AppLayout.vue'
-import UploadView from './Upload.vue'
+import UploadView from './Views/Upload.vue'
 import RelatoriosView from './Relatorios.vue'
 import GraficosView from './Graficos.vue'
 
@@ -40,6 +40,7 @@ const routes = [
     children: [
       { 
         path: 'upload', 
+        alias: '/upload', // <--- Permite acessar diretamente via http://localhost:5173/upload
         name: 'Upload', 
         component: UploadView 
       },
