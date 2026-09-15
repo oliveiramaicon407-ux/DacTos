@@ -11,6 +11,9 @@ const email = ref('')
 const senha = ref('')
 const erro = ref('')
 
+// Estado para controlar a visibilidade da senha
+const mostrarSenha = ref(false)
+
 function handleLogin() {
   erro.value = ''
   
@@ -41,7 +44,7 @@ function handleLogin() {
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
       </svg>
-      Voltar para início
+      Voltar
     </router-link>
 
     <!-- Card Principal de Login com borda neon suave e Glassmorphism -->
@@ -79,13 +82,31 @@ function handleLogin() {
             <label class="text-xs font-semibold text-zinc-300">Senha</label>
             <a href="#" class="text-[11px] text-blue-400 hover:text-blue-300 transition-colors">Esqueceu?</a>
           </div>
-          <input 
-            v-model="senha"
-            type="password" 
-            required
-            placeholder="••••••••"
-            class="w-full px-4 py-2.5 text-xs bg-black/80 border border-zinc-800 focus:border-blue-500 rounded-xl text-white placeholder-zinc-600 outline-none transition-all focus:ring-1 focus:ring-blue-500"
-          />
+          
+          <!-- Campo de Senha com o Botão do Olhinho -->
+          <div class="relative">
+            <input 
+              v-model="senha"
+              :type="mostrarSenha ? 'text' : 'password'" 
+              required
+              placeholder="••••••••"
+              class="w-full pl-4 pr-10 py-2.5 text-xs bg-black/80 border border-zinc-800 focus:border-blue-500 rounded-xl text-white placeholder-zinc-600 outline-none transition-all focus:ring-1 focus:ring-blue-500"
+            />
+            <button 
+              type="button" 
+              @click="mostrarSenha = !mostrarSenha" 
+              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-zinc-500 hover:text-zinc-300 transition-colors"
+              tabindex="-1"
+            >
+              <svg v-if="!mostrarSenha" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.07 10.07 0 014.242-5.132M9.88 9.88l-3.53-3.53m6.01 6.01l3.53 3.53M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button 

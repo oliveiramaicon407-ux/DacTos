@@ -1,9 +1,49 @@
 <!-- src/layouts/AppLayout.vue -->
+<script setup>
+import { ref } from 'vue'
+import { useAuthStore } from '../stores/authStore'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+// Estado para controlar a abertura do menu no celular
+const isMobileMenuOpen = ref(false)
+
+function fazerLogout() {
+  authStore.logout()
+  router.push('/login')
+}
+</script>
+
 <template>
-  <div class="min-h-screen bg-black text-white flex font-sans antialiased">
+  <div class="min-h-screen bg-black text-white flex font-sans antialiased relative">
     
-    <!-- Sidebar Lateral Fixa -->
-    <aside class="w-64 border-r border-zinc-800/80 bg-zinc-950 flex flex-col justify-between shrink-0 min-h-screen">
+    <!-- Botão Hambúrguer Mobile (Aparece apenas em telas pequenas) -->
+    <button 
+      @click="isMobileMenuOpen = !isMobileMenuOpen"
+      class="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-xl shadow-lg hover:text-white transition-colors"
+      aria-label="Abrir Menu"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path v-if="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Overlay escuro para quando o menu abrir no celular -->
+    <div 
+      v-if="isMobileMenuOpen" 
+      @click="isMobileMenuOpen = false"
+      class="lg:hidden fixed inset-0 bg-black/80 z-30 backdrop-blur-sm"
+    ></div>
+
+    <!-- Sidebar Lateral Fixa / Responsiva -->
+    <aside :class="[
+        'fixed lg:static inset-y-0 left-0 z-40 w-64 border-r border-zinc-800/80 bg-zinc-950 flex flex-col justify-between shrink-0 min-h-screen transition-transform duration-300 ease-in-out',
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      ]"
+    >
       <div>
         <!-- Brand / Header da Sidebar -->
         <div class="p-6 border-b border-zinc-800/80 flex items-center justify-between">
@@ -16,7 +56,7 @@
         </div>
 
         <!-- Menu de Navegação -->
-        <nav class="p-4 space-y-1.5">
+        <nav class="p-4 space-y-1.5" @click="isMobileMenuOpen = false">
           <span class="px-3 text-[10px] font-semibold uppercase tracking-wider text-zinc-500 block mb-2">
             Mapeamento & Ingestão
           </span>
@@ -60,15 +100,13 @@
         </nav>
       </div>
 
-      <!-- Rodapé do Menu (Informações do Usuário & Sair) -->
+      <!-- Rodapé do Menu -->
       <div class="p-4 border-t border-zinc-800/80 space-y-3">
-        
-        <!-- Bloco de Identificação do Usuário Logado -->
-        <div v-if="authStore.usuario" class="flex items-center gap-3 px-2 py-1.5 bg-zinc-900/60 rounded-xl border border-zinc-800/60">
+        <div v-if="authStore.usuario" class="flex items-center gap-3 px-2 py-1.5 bg-zinc-900/60 rounded-xl border border-zinc-800/60 min-w-0">
           <div class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xs shrink-0">
             {{ authStore.usuario.charAt(0).toUpperCase() }}
           </div>
-          <div class="overflow-hidden">
+          <div class="overflow-hidden min-w-0 flex-1">
             <p class="text-[10px] text-zinc-400">Conectado como</p>
             <p class="text-xs font-mono text-zinc-200 truncate" :title="authStore.usuario">
               {{ authStore.usuario }}
@@ -76,18 +114,16 @@
           </div>
         </div>
 
-        <!-- Botão de Sair / Logout -->
         <button 
           @click="fazerLogout"
-          class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
+          class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            <path stroke-linecap="round" stroke-linejoin="nowum" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
           </svg>
           Encerrar Sessão
         </button>
 
-        <!-- Voltar para a Landing Page -->
         <router-link 
           to="/" 
           class="flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
@@ -97,28 +133,13 @@
           </svg>
           Voltar para Home
         </router-link>
-
       </div>
     </aside>
 
-    <!-- Área Principal que Renderiza as Views (Upload, Graficos, Relatorios) -->
-    <main class="flex-1 overflow-y-auto min-h-screen bg-black">
+    <!-- Área Principal com Padding adaptado para o botão mobile -->
+    <main class="flex-1 overflow-y-auto min-h-screen bg-black p-6 lg:p-8 pt-16 lg:pt-8">
       <router-view />
     </main>
 
   </div>
 </template>
-
-<script setup>
-import { useAuthStore } from '../stores/authStore'
-import { useRouter } from 'vue-router'
-
-const authStore = useAuthStore()
-const router = useRouter()
-
-function fazerLogout() {
-  authStore.logout()
-  router.push('/login') // Ou para a rota de login configurada no projeto
-}
-</script>
-
