@@ -2,13 +2,27 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuthStore } from './stores/authStore'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
 const email = ref('')
 const senha = ref('')
+const erro = ref('')
 
 function handleLogin() {
-  router.push('/sidebar/upload')
+  erro.value = ''
+  
+  // Chama a action login da authStore
+  const sucesso = authStore.login(email.value, senha.value)
+
+  if (sucesso) {
+    // Redireciona para o upload se o login der certo
+    router.push('/sidebar/upload')
+  } else {
+    erro.value = 'Por favor, preencha o e-mail e a senha.'
+  }
 }
 </script>
 
@@ -40,6 +54,11 @@ function handleLogin() {
         </router-link>
         <h2 class="text-xl font-bold text-white tracking-tight">Acesse sua conta</h2>
         <p class="text-xs text-zinc-400 mt-1">Entre com suas credenciais para acessar a plataforma</p>
+      </div>
+
+      <!-- Alerta de Erro caso exista -->
+      <div v-if="erro" class="mb-4 p-3 bg-red-950/50 border border-red-800/60 text-red-400 text-xs rounded-xl text-center">
+        {{ erro }}
       </div>
 
       <!-- Formulário de Login -->

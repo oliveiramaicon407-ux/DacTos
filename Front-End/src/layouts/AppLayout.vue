@@ -60,21 +60,48 @@
         </nav>
       </div>
 
-      <!-- Rodapé do Menu -->
-      <div class="p-4 border-t border-zinc-800/80">
-        <router-link 
-          to="/" 
-          class="flex items-center gap-2 px-3 py-2 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+      <!-- Rodapé do Menu (Informações do Usuário & Sair) -->
+      <div class="p-4 border-t border-zinc-800/80 space-y-3">
+        
+        <!-- Bloco de Identificação do Usuário Logado -->
+        <div v-if="authStore.usuario" class="flex items-center gap-3 px-2 py-1.5 bg-zinc-900/60 rounded-xl border border-zinc-800/60">
+          <div class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold text-xs shrink-0">
+            {{ authStore.usuario.charAt(0).toUpperCase() }}
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-[10px] text-zinc-400">Conectado como</p>
+            <p class="text-xs font-mono text-zinc-200 truncate" :title="authStore.usuario">
+              {{ authStore.usuario }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Botão de Sair / Logout -->
+        <button 
+          @click="fazerLogout"
+          class="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all border border-transparent hover:border-red-500/20"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          Encerrar Sessão
+        </button>
+
+        <!-- Voltar para a Landing Page -->
+        <router-link 
+          to="/" 
+          class="flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
-          Sair para a Landing Page
+          Voltar para Home
         </router-link>
+
       </div>
     </aside>
 
-    <!-- Área Principal que Renderiza as Views Rotacionadas (Upload, Graficos, Relatorios) -->
+    <!-- Área Principal que Renderiza as Views (Upload, Graficos, Relatorios) -->
     <main class="flex-1 overflow-y-auto min-h-screen bg-black">
       <router-view />
     </main>
@@ -83,4 +110,14 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '../stores/authStore'
+import { useRouter } from 'vue-router'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+function fazerLogout() {
+  authStore.logout()
+  router.push('/login') // Ou para a rota de login configurada no projeto
+}
 </script>

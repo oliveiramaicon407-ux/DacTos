@@ -1,7 +1,31 @@
+<!-- src/Views/RelatoriosView.vue -->
 <script setup>
+import { computed } from 'vue'
 import { useUploadStore } from './stores/uploadStore'
 
 const store = useUploadStore()
+
+// Métricas adicionais calculadas a partir dos dados tratados da planilha
+const mediaVendasOnline = computed(() => {
+  if (!store.temDados) return '0%'
+  const soma = store.dadosTratados.reduce((acc, curr) => {
+    const val = Number(curr.Vendas_Online || curr['Vendas Online (%)'] || curr.vendas_online || 0)
+    // Se o valor estiver em decimal (ex: 0.52) ou percentual
+    return acc + (val > 1 ? val / 100 : val)
+  }, 0)
+  const media = (soma / store.dadosTratados.length) * 100
+  return media.toFixed(1) + '%'
+})
+
+const mediaPerdaSaldo = computed(() => {
+  if (!store.temDados) return '0%'
+  const soma = store.dadosTratados.reduce((acc, curr) => {
+    const val = Number(curr.Perda_de_Saldo || curr['Perda de Saldo (%)'] || curr.perda_saldo || 0)
+    return acc + (val > 1 ? val / 100 : val)
+  }, 0)
+  const media = (soma / store.dadosTratados.length) * 100
+  return media.toFixed(1) + '%'
+})
 </script>
 
 <template>
@@ -27,43 +51,51 @@ const store = useUploadStore()
     </header>
 
     <!-- Conteúdo Principal do Relatório -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 w-full">
+    <main class="flex-1 max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 w-full space-y-8">
       
       <!-- Cabeçalho da Seção -->
       <div class="mb-8">
         <span class="px-3 py-1 text-[10px] font-bold tracking-widest uppercase text-blue-400 bg-blue-950/60 border border-blue-800/50 rounded-full">
-          Relatório
+          Relatório Executivo
         </span>
         <h1 class="mt-3 text-3xl font-extrabold text-white tracking-tight sm:text-4xl">
           Resumo da Planilha
         </h1>
         <p class="mt-2 text-xs text-gray-400">
-          Métricas consolidadas e estado dos dados processados na aplicação.
+          Métricas consolidadas, médias analíticas e estado dos dados processados na aplicação.
         </p>
       </div>
 
       <!-- Grid de Cards em Estilo Dark -->
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         
         <!-- Card 1: Linhas Carregadas -->
         <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl relative overflow-hidden">
           <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Linhas carregadas</p>
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Total de Registros</p>
           <p class="mt-3 text-4xl font-extrabold text-blue-500 font-mono">
             {{ store.totalLinhas }}
           </p>
         </div>
 
-        <!-- Card 2: Colunas Identificadas -->
+        <!-- Card 2: Média Vendas Online -->
         <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl relative overflow-hidden">
-          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Colunas</p>
-          <p class="mt-3 text-4xl font-extrabold text-white font-mono">
-            {{ store.totalColunas }}
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Média Vendas Online</p>
+          <p class="mt-3 text-4xl font-extrabold text-emerald-400 font-mono">
+            {{ store.temDados ? mediaVendasOnline : '0%' }}
           </p>
         </div>
 
-        <!-- Card 3: Situação / Status Pinia -->
-        <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl sm:col-span-2 lg:col-span-1 flex flex-col justify-between">
+        <!-- Card 3: Média Perda de Saldo -->
+        <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl relative overflow-hidden">
+          <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Média Perda de Saldo</p>
+          <p class="mt-3 text-4xl font-extrabold text-amber-500 font-mono">
+            {{ store.temDados ? mediaPerdaSaldo : '0%' }}
+          </p>
+        </div>
+
+        <!-- Card 4: Situação / Status Pinia -->
+        <div class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 shadow-2xl flex flex-col justify-between">
           <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Situação</p>
             <div class="mt-3 flex items-center gap-2">
@@ -71,18 +103,33 @@ const store = useUploadStore()
                 class="w-2.5 h-2.5 rounded-full"
                 :class="store.totalLinhas ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'"
               ></span>
-              <p class="text-sm font-semibold text-gray-200">
-                {{ store.totalLinhas ? 'Dados disponíveis no Pinia' : 'Nenhuma planilha carregada' }}
+              <p class="text-xs font-semibold text-gray-200">
+                {{ store.totalLinhas ? 'Sincronizado' : 'Aguardando Arquivo' }}
               </p>
             </div>
           </div>
           
           <div v-if="store.totalLinhas" class="mt-4 pt-3 border-t border-zinc-900 text-[11px] text-emerald-400 font-mono">
-            Pronto para gerar relatórios
+            {{ store.totalColunas }} colunas mapeadas
           </div>
         </div>
 
       </div>
+
+      <!-- Seção de Colunas Identificadas -->
+      <div v-if="store.temDados" class="rounded-2xl border border-zinc-800/80 bg-zinc-950 p-6 space-y-4">
+        <h3 class="text-sm font-semibold text-zinc-300">Colunas Mapeadas na Base de Dados</h3>
+        <div class="flex flex-wrap gap-2">
+          <span 
+            v-for="coluna in store.colunas" 
+            :key="coluna" 
+            class="px-3 py-1 bg-zinc-900 border border-zinc-800 text-zinc-300 rounded-lg text-xs font-mono"
+          >
+            {{ coluna }}
+          </span>
+        </div>
+      </div>
+
     </main>
 
     <!-- Rodapé -->

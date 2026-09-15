@@ -1,3 +1,4 @@
+// src/stores/uploadStore.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as XLSX from 'xlsx'
@@ -10,11 +11,11 @@ export const useUploadStore = defineStore('upload', () => {
   const erro = ref('')
   const carregando = ref(false)
 
-  // --- GETTERS (Cálculos automáticos baseados nos slides) ---
+  // --- GETTERS ---
   const totalClientes = computed(() => dadosTratados.value.length)
   const totalErros = computed(() => erro.value ? 1 : 0)
   
-  // Clientes que estão no nível 'A' (conforme regra do slide)
+  // Clientes que estão no nível 'A'
   const clientesNivelA = computed(() => {
     return dadosTratados.value.filter(c => c.nivel_cliente === 'A').length
   })
@@ -25,7 +26,7 @@ export const useUploadStore = defineStore('upload', () => {
   const totalLinhas = computed(() => dadosTratados.value.length)
   const totalColunas = computed(() => colunas.value.length)
 
-  // --- ACTIONS (Ações do sistema) ---
+  // --- ACTIONS ---
   function selecionarArquivo(file) {
     if (!file) return
 
@@ -57,7 +58,7 @@ export const useUploadStore = defineStore('upload', () => {
           return
         }
 
-        // Aplica a função de tratamento de linha vista em aula
+        // Aplica a função de tratamento de linha
         dadosTratados.value = jsonBruto.map(linha => tratarLinha(linha))
         colunas.value = Object.keys(dadosTratados.value[0] || {})
       } catch (err) {
@@ -88,11 +89,11 @@ export const useUploadStore = defineStore('upload', () => {
     return true
   }
 
-  // Função de tratamento de linha exigida pela professora (mapeia segmentos e normaliza maiúsculas)
+  // Função de tratamento de linha corrigida para capturar 'Segmento' ou 'segmento'
   function tratarLinha(linha) {
-    const segmentoBruto = String(linha.segmento || '').trim().toUpperCase()
+    const valorSegmento = linha.Segmento !== undefined ? linha.Segmento : linha.segmento
+    const segmentoBruto = String(valorSegmento || '').trim()
 
-    // Mapeamento de variações de texto conforme o slide
     const mapaSegmentos = {
       'IND': 'Indústria',
       'INDÚSTRIA': 'Indústria',
@@ -102,10 +103,12 @@ export const useUploadStore = defineStore('upload', () => {
       'SERVIÇOS': 'Serviços'
     }
 
+    const segmentoFinal = mapaSegmentos[segmentoBruto.toUpperCase()] || segmentoBruto || 'Não Definido'
+
     return {
       ...linha,
-      segmento: mapaSegmentos[segmentoBruto] || segmentoBruto,
-      nivel_cliente: String(linha.nivel_cliente || '').trim().toUpperCase()
+      segmento: segmentoFinal,
+      nivel_cliente: String(linha.nivel_cliente || linha.Nivel_Cliente || '').trim().toUpperCase()
     }
   }
 

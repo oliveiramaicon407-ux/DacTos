@@ -15,7 +15,7 @@ const dadosSegmentos = computed(() => {
     ]
   }
 
-  // Conta os segmentos dinamicamente da planilha carregada
+  // Conta os segmentos tratados pela store
   const contagem = {}
   store.dadosTratados.forEach(c => {
     const seg = c.segmento || 'Outros'
@@ -26,7 +26,9 @@ const dadosSegmentos = computed(() => {
     'from-blue-500 to-indigo-600',
     'from-emerald-500 to-teal-600',
     'from-amber-500 to-orange-600',
-    'from-purple-500 to-pink-600'
+    'from-purple-500 to-pink-600',
+    'from-rose-500 to-red-600',
+    'from-cyan-500 to-blue-600'
   ]
 
   return Object.keys(contagem).map((nome, index) => ({
