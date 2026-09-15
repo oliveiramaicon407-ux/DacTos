@@ -121,3 +121,4 @@ function fazerLogout() {
   router.push('/login') // Ou para a rota de login configurada no projeto
 }
 </script>
+
