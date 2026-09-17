@@ -2,7 +2,6 @@ package CTI.BackEnd.controller;
 
 import CTI.BackEnd.model.Consultor;
 import CTI.BackEnd.service.ConsultorService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +11,11 @@ import java.util.List;
 @RequestMapping("/consultores")
 public class ConsultorController {
 
-    @Autowired
-    private ConsultorService consultorService;
+    private final ConsultorService consultorService;
+
+    public ConsultorController(ConsultorService consultorService) {
+        this.consultorService = consultorService;
+    }
 
     @GetMapping
     public List<Consultor> listar() {

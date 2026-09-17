@@ -12,8 +12,11 @@ import java.util.List;
 @RequestMapping("/servicos")
 public class ServicoController {
 
-    @Autowired
-    private ServicoService servicoService;
+    private final ServicoService servicoService;
+
+    public ServicoController(ServicoService servicoService) {
+        this.servicoService = servicoService;
+    }
 
     @GetMapping
     public List<Servico> listar() {

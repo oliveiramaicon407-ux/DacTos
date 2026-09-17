@@ -2,7 +2,6 @@ package CTI.BackEnd.service;
 
 import CTI.BackEnd.model.Servico;
 import CTI.BackEnd.repository.ServicoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Optional;
 @Service
 public class ServicoService {
 
-    @Autowired
     private ServicoRepository servicoRepository;
+
+    public ServicoService(ServicoRepository servicoRepository) {
+        this.servicoRepository = servicoRepository;
+    }
 
     public List<Servico> listarTodos() {
         return servicoRepository.findAll();
