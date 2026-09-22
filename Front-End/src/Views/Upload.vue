@@ -9,6 +9,11 @@ function handleFileChange(event) {
     store.selecionarArquivo(file)
   }
 }
+
+// Função para disparar o envio para o backend
+const handleEnviarServidor = async () => {
+  await store.enviarParaBackend()
+}
 </script>
 
 <template>
@@ -80,6 +85,16 @@ function handleFileChange(event) {
           </span>
           <span class="text-xs text-zinc-400">Erros encontrados</span>
         </div>
+
+        <!-- Botão para Enviar para o Servidor -->
+        <button 
+          @click="handleEnviarServidor"
+          :disabled="store.carregando || !store.temDados"
+          class="w-full py-2.5 px-4 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+        >
+          <span v-if="store.carregando">A processar...</span>
+          <span v-else>Enviar para o Servidor</span>
+        </button>
 
         <button 
           v-if="store.arquivo"

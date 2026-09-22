@@ -131,6 +131,19 @@
       </div>
     </section>
 
+    <footer class="bg-black text-gray-500 py-10 px-4 sm:px-6 text-xs border-t border-zinc-900 w-full">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+        <div>
+          <p class="font-bold text-gray-300 text-sm mb-1">DacTos</p>
+          <p>© 2026 Todos os direitos reservados.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-8 text-gray-400">
+          <p>suporte@dactos.com</p>
+          <p>(00) 1234-5678</p>
+        </div>
+      </div>
+    </footer>
+
   </div>
 </template>
 

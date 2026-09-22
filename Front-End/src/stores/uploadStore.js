@@ -2,6 +2,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as XLSX from 'xlsx'
+// api importada mas comentada temporariamente até o backend estar pronto
+// import api from '../Services/api'
 
 export const useUploadStore = defineStore('upload', () => {
   // --- STATE (Dados guardados) ---
@@ -89,7 +91,7 @@ export const useUploadStore = defineStore('upload', () => {
     return true
   }
 
-  // Função de tratamento de linha corrigida para capturar 'Segmento' ou 'segmento'
+  // Função de tratamento de linha para capturar 'Segmento' ou 'segmento'
   function tratarLinha(linha) {
     const valorSegmento = linha.Segmento !== undefined ? linha.Segmento : linha.segmento
     const segmentoBruto = String(valorSegmento || '').trim()
@@ -110,6 +112,23 @@ export const useUploadStore = defineStore('upload', () => {
       segmento: segmentoFinal,
       nivel_cliente: String(linha.nivel_cliente || linha.Nivel_Cliente || '').trim().toUpperCase()
     }
+  }
+
+  // Ação adaptada para processar localmente via Pinia enquanto o backend não está ativo
+  async function enviarParaBackend() {
+    if (!temDados.value) {
+      alert('Não há dados para enviar.')
+      return
+    }
+
+    carregando.value = true
+    
+    // Simula o tempo de resposta do processamento
+    setTimeout(() => {
+      carregando.value = false
+      console.log('Dados validados e processados no Pinia:', dadosTratados.value)
+      alert('Planilha validada e processada com sucesso no Front-End (Pinia)!')
+    }, 800)
   }
 
   function limpar() {
@@ -133,6 +152,7 @@ export const useUploadStore = defineStore('upload', () => {
     totalLinhas,
     totalColunas,
     selecionarArquivo,
+    enviarParaBackend,
     limpar
   }
 })
