@@ -1,40 +1,53 @@
 package CTI.BackEnd.controller;
 
-import CTI.BackEnd.dto.UsuarioDTO;
 import CTI.BackEnd.model.Usuario;
+import CTI.BackEnd.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @PostMapping
-    public Usuario criar(@Valid @RequestBody UsuarioDTO usuarioDTO) {
-        // Lógica para criar um novo usuário
-        return new Usuario();
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @GetMapping
     public List<Usuario> listar() {
-        // Lógica para listar todos os usuários
-        return new ArrayList<>();
+        return usuarioService.listarTodos();
+    }
+
+    @PostMapping
+    public ResponseEntity<Usuario> criar(@Valid @RequestBody Usuario usuario) {
+        Usuario novoUsuario = usuarioService.salvar(usuario);
+        return ResponseEntity.ok(novoUsuario);
     }
 
     @PutMapping("/{id}")
-    public Usuario atualizar(
-        @PathVariable Long id,
-        @RequestBody UsuarioDTO usuarioDTO
-    ) {
-        // Lógica para atualizar um usuário existente
-        return new Usuario();
+    public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuarioDetails) {
+        return usuarioService.buscarPorId(id)
+                .map(usuario -> {
+                    usuario.setNome(usuarioDetails.getNome());
+                    usuario.setEmail(usuarioDetails.getEmail());
+                    // Adicione os outros campos do seu modelo de Usuário aqui, se houver
+                    Usuario atualizado = usuarioService.salvar(usuario);
+                    return ResponseEntity.ok(atualizado);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        // Lógica para deletar um usuário existente
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        if (usuarioService.buscarPorId(id).isPresent()) {
+            usuarioService.deletar(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
