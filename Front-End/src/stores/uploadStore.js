@@ -2,8 +2,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as XLSX from 'xlsx'
-// api importada mas comentada temporariamente até o backend estar pronto
-// import api from '../Services/api'
+// API importada para comunicação com o backend
+import api from '../Services/api'
 
 export const useUploadStore = defineStore('upload', () => {
   // --- STATE (Dados guardados) ---
@@ -114,7 +114,7 @@ export const useUploadStore = defineStore('upload', () => {
     }
   }
 
-  // Ação adaptada para processar localmente via Pinia enquanto o backend não está ativo
+  // Ação modificada para enviar os dados tratados ao backend real via Axios
   async function enviarParaBackend() {
     if (!temDados.value) {
       alert('Não há dados para enviar.')
@@ -123,12 +123,21 @@ export const useUploadStore = defineStore('upload', () => {
 
     carregando.value = true
     
-    // Simula o tempo de resposta do processamento
-    setTimeout(() => {
+    try {
+      // Faz o POST ajustado para a rota do PlanilhaController no Spring Boot
+      const resposta = await api.post('/api/planilha/importar', {
+        nomeArquivo: arquivo.value ? arquivo.value.name : 'planilha.xlsx',
+        dados: dadosTratados.value
+      })
+      
+      console.log('Dados salvos no servidor:', resposta.data)
+      alert('Planilha enviada e processada com sucesso no Back-End!')
+    } catch (err) {
+      console.error('Erro ao enviar para o back-end:', err)
+      alert('Erro ao comunicar com o servidor Spring Boot.')
+    } finally {
       carregando.value = false
-      console.log('Dados validados e processados no Pinia:', dadosTratados.value)
-      alert('Planilha validada e processada com sucesso no Front-End (Pinia)!')
-    }, 800)
+    }
   }
 
   function limpar() {
