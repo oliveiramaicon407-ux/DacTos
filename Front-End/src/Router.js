@@ -1,66 +1,186 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// Páginas Públicas / Isoladas (SEM layout)
+// =========================
+// PÁGINAS PÚBLICAS
+// =========================
+
 import Home from './Home.vue'
 import Login from './Login.vue'
 import Register from './Register.vue'
+
 import SaasTemplate from './components/SaasTemplate.vue'
 
-// Layout do Painel e Páginas Internas
+// =========================
+// LAYOUT DO PAINEL
+// =========================
+
 import AppLayout from './layouts/AppLayout.vue'
+
+// =========================
+// PÁGINAS INTERNAS
+// =========================
+
 import UploadView from './Views/Upload.vue'
 import RelatoriosView from './Relatorios.vue'
 import GraficosView from './Graficos.vue'
 
+
 const routes = [
-  { 
-    path: '/', 
-    name: 'Home', 
-    component: Home 
+
+  // =========================
+  // HOME
+  // =========================
+
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
   },
-  { 
-    path: '/login', 
-    name: 'Login', 
-    component: Login 
+
+  // =========================
+  // LOGIN
+  // =========================
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
-  { 
-    path: '/register', 
-    name: 'Register', 
-    component: Register 
+
+  // =========================
+  // CADASTRO
+  // =========================
+
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
   },
+
+  // =========================
+  // SAAS
+  // =========================
+
   {
     path: '/saas',
     name: 'SaasTemplate',
     component: SaasTemplate
   },
+
+  // =========================
+  // PAINEL PROTEGIDO
+  // =========================
+
   {
     path: '/sidebar',
+
     component: AppLayout,
+
+    meta: {
+      requiresAuth: true
+    },
+
     redirect: '/sidebar/upload',
+
     children: [
-      { 
-        path: 'upload', 
-        alias: '/upload', // <--- Permite acessar diretamente via http://localhost:5173/upload
-        name: 'Upload', 
-        component: UploadView 
+
+      // UPLOAD
+      {
+        path: 'upload',
+
+        alias: '/upload',
+
+        name: 'Upload',
+
+        component: UploadView,
+
+        meta: {
+          requiresAuth: true
+        }
       },
-      { 
-        path: 'relatorios', 
-        name: 'Relatorios', 
-        component: RelatoriosView 
+
+      // RELATÓRIOS
+      {
+        path: 'relatorios',
+
+        name: 'Relatorios',
+
+        component: RelatoriosView,
+
+        meta: {
+          requiresAuth: true
+        }
       },
-      { 
-        path: 'graficos', 
-        name: 'Graficos', 
-        component: GraficosView 
+
+      // GRÁFICOS
+      {
+        path: 'graficos',
+
+        name: 'Graficos',
+
+        component: GraficosView,
+
+        meta: {
+          requiresAuth: true
+        }
       }
+
     ]
   }
+
 ]
 
+
+// =========================
+// CRIAÇÃO DO ROUTER
+// =========================
+
 const router = createRouter({
+
   history: createWebHistory(),
+
   routes
+
 })
+
+
+// =========================
+// PROTEÇÃO DAS ROTAS
+// =========================
+
+router.beforeEach((to) => {
+
+  const token = localStorage.getItem('token')
+
+
+  // Usuário NÃO autenticado
+  // tentando acessar página protegida
+  if (to.meta.requiresAuth && !token) {
+
+    return {
+      name: 'Login'
+    }
+
+  }
+
+
+  // Usuário já autenticado
+  // tentando voltar para Login/Cadastro
+  if (
+    (to.name === 'Login' || to.name === 'Register') &&
+    token
+  ) {
+
+    return {
+      name: 'Upload'
+    }
+
+  }
+
+
+  return true
+
+})
+
 
 export default router

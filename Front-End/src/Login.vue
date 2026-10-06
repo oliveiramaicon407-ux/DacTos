@@ -1,4 +1,5 @@
-<!-- src/Login.vue -->
+<!-- src/Views/Login.vue -->
+
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -10,21 +11,41 @@ const authStore = useAuthStore()
 const email = ref('')
 const senha = ref('')
 const erro = ref('')
+const carregando = ref(false)
 
 // Estado para controlar a visibilidade da senha
 const mostrarSenha = ref(false)
 
-function handleLogin() {
+async function handleLogin() {
   erro.value = ''
-  
-  // Chama a action login da authStore
-  const sucesso = authStore.login(email.value, senha.value)
 
-  if (sucesso) {
-    // Redireciona para o upload se o login der certo
-    router.push('/sidebar/upload')
-  } else {
+  // Validação básica
+  if (!email.value || !senha.value) {
     erro.value = 'Por favor, preencha o e-mail e a senha.'
+    return
+  }
+
+  carregando.value = true
+
+  try {
+    // Faz o login real no Spring Boot
+    const resultado = await authStore.login(
+      email.value,
+      senha.value
+    )
+
+    if (resultado.sucesso) {
+      // Login realizado com sucesso
+      router.push('/sidebar/upload')
+    } else {
+      erro.value = resultado.mensagem || 'E-mail ou senha inválidos.'
+    }
+
+  } catch (error) {
+    console.error('Erro ao realizar login:', error)
+    erro.value = 'Não foi possível conectar ao servidor.'
+  } finally {
+    carregando.value = false
   }
 }
 </script>
@@ -34,6 +55,7 @@ function handleLogin() {
     
     <!-- EFEITOS DE BRILHO AZUL E ÍNDIGO ATRÁS DO CARD -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[450px] sm:h-[450px] bg-blue-600/60 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] bg-indigo-500/50 rounded-full blur-2xl pointer-events-none"></div>
 
     <!-- Botão Voltar para a Landing Page -->
@@ -42,87 +64,184 @@ function handleLogin() {
       class="absolute top-6 left-6 text-xs text-zinc-400 hover:text-white flex items-center gap-2 transition-colors z-20"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        <path 
+          stroke-linecap="round" 
+          stroke-linejoin="round" 
+          stroke-width="2" 
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        />
       </svg>
+
       Voltar
     </router-link>
 
-    <!-- Card Principal de Login com borda neon suave e Glassmorphism -->
+    <!-- Card Principal -->
     <div class="relative z-10 w-full max-w-md p-8 rounded-2xl bg-zinc-950/90 border border-blue-500/30 shadow-[0_0_50px_rgba(37,99,235,0.25)] backdrop-blur-xl">
       
-      <!-- Cabeçalho do Card -->
+      <!-- Cabeçalho -->
       <div class="text-center mb-8">
-        <router-link to="/" class="text-2xl font-bold text-blue-500 hover:text-blue-400 transition-colors inline-block mb-2">
+
+        <router-link 
+          to="/" 
+          class="text-2xl font-bold text-blue-500 hover:text-blue-400 transition-colors inline-block mb-2"
+        >
           DacTos
         </router-link>
-        <h2 class="text-xl font-bold text-white tracking-tight">Acesse sua conta</h2>
-        <p class="text-xs text-zinc-400 mt-1">Entre com suas credenciais para acessar a plataforma</p>
+
+        <h2 class="text-xl font-bold text-white tracking-tight">
+          Acesse sua conta
+        </h2>
+
+        <p class="text-xs text-zinc-400 mt-1">
+          Entre com suas credenciais para acessar a plataforma
+        </p>
+
       </div>
 
-      <!-- Alerta de Erro caso exista -->
-      <div v-if="erro" class="mb-4 p-3 bg-red-950/50 border border-red-800/60 text-red-400 text-xs rounded-xl text-center">
+      <!-- Mensagem de erro -->
+      <div 
+        v-if="erro" 
+        class="mb-4 p-3 bg-red-950/50 border border-red-800/60 text-red-400 text-xs rounded-xl text-center"
+      >
         {{ erro }}
       </div>
 
-      <!-- Formulário de Login -->
+      <!-- Formulário -->
       <form @submit.prevent="handleLogin" class="space-y-5">
+
+        <!-- E-mail -->
         <div>
-          <label class="block text-xs font-semibold text-zinc-300 mb-1.5">E-mail</label>
+
+          <label class="block text-xs font-semibold text-zinc-300 mb-1.5">
+            E-mail
+          </label>
+
           <input 
             v-model="email"
             type="email" 
             required
+            autocomplete="email"
             placeholder="seu@email.com"
             class="w-full px-4 py-2.5 text-xs bg-black/80 border border-zinc-800 focus:border-blue-500 rounded-xl text-white placeholder-zinc-600 outline-none transition-all focus:ring-1 focus:ring-blue-500"
           />
+
         </div>
 
+        <!-- Senha -->
         <div>
+
           <div class="flex justify-between items-center mb-1.5">
-            <label class="text-xs font-semibold text-zinc-300">Senha</label>
-            <a href="#" class="text-[11px] text-blue-400 hover:text-blue-300 transition-colors">Esqueceu?</a>
+
+            <label class="text-xs font-semibold text-zinc-300">
+              Senha
+            </label>
+
+            <a 
+              href="#" 
+              @click.prevent
+              class="text-[11px] text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              Esqueceu?
+            </a>
+
           </div>
           
-          <!-- Campo de Senha com o Botão do Olhinho -->
+          <!-- Campo de senha -->
           <div class="relative">
+
             <input 
               v-model="senha"
               :type="mostrarSenha ? 'text' : 'password'" 
               required
+              autocomplete="current-password"
               placeholder="••••••••"
               class="w-full pl-4 pr-10 py-2.5 text-xs bg-black/80 border border-zinc-800 focus:border-blue-500 rounded-xl text-white placeholder-zinc-600 outline-none transition-all focus:ring-1 focus:ring-blue-500"
             />
+
+            <!-- Botão mostrar/ocultar senha -->
             <button 
               type="button" 
               @click="mostrarSenha = !mostrarSenha" 
               class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-zinc-500 hover:text-zinc-300 transition-colors"
               tabindex="-1"
             >
-              <svg v-if="!mostrarSenha" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+
+              <!-- Olho fechado -->
+              <svg 
+                v-if="!mostrarSenha" 
+                class="w-4 h-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
               </svg>
-              <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.07 10.07 0 014.242-5.132M9.88 9.88l-3.53-3.53m6.01 6.01l3.53 3.53M3 3l18 18" />
+
+              <!-- Olho aberto -->
+              <svg 
+                v-else 
+                class="w-4 h-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.07 10.07 0 014.242-5.132M9.88 9.88l-3.53-3.53m6.01 6.01l3.53 3.53M3 3l18 18"
+                />
               </svg>
+
             </button>
+
           </div>
+
         </div>
 
+        <!-- Botão de Login -->
         <button 
           type="submit" 
-          class="w-full py-3 px-4 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transform hover:-translate-y-0.5 cursor-pointer mt-2"
+          :disabled="carregando"
+          class="w-full py-3 px-4 text-xs font-semibold bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900 disabled:cursor-not-allowed text-white rounded-xl transition-all duration-300 shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transform hover:-translate-y-0.5 cursor-pointer mt-2"
         >
-          Entrar na Plataforma
+
+          <span v-if="!carregando">
+            Entrar na Plataforma
+          </span>
+
+          <span v-else>
+            Entrando...
+          </span>
+
         </button>
+
       </form>
 
-      <!-- Rodapé do Card -->
+      <!-- Rodapé -->
       <div class="mt-6 text-center text-xs text-zinc-500">
-        Ainda não tem uma conta? 
-        <router-link to="/register" class="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+
+        Ainda não tem uma conta?
+
+        <router-link 
+          to="/register" 
+          class="text-blue-400 hover:text-blue-300 font-semibold transition-colors"
+        >
           Cadastre-se
         </router-link>
+
       </div>
 
     </div>
