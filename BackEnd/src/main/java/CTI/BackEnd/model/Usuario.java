@@ -1,6 +1,7 @@
 package CTI.BackEnd.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usuarios")
@@ -42,5 +43,16 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    @JsonIgnore
+    @Column(nullable = false)
+    private String senha;
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }
