@@ -1,9 +1,9 @@
 
-package CTI.BackEnd.dto;
+package CTI.BackEnd.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record RegistroDTO(
     @NotBlank(message = "O nome é obrigatório.")

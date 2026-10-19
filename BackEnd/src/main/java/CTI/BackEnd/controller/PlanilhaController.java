@@ -1,31 +1,31 @@
-package CTI.BackEnd.controller;
+package CTI.BackEnd.controller;
 
-import CTI.BackEnd.dto.PlanilhaRequestDTO;
-import CTI.BackEnd.model.Cliente;
-import CTI.BackEnd.model.Consultor;
-import CTI.BackEnd.repository.ClienteRepository;
-import CTI.BackEnd.repository.ConsultorRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import CTI.BackEnd.dto.PlanilhaRequestDTO;
+import CTI.BackEnd.model.Cliente;
+import CTI.BackEnd.model.Consultor;
+import CTI.BackEnd.repository.ClienteRepository;
+import CTI.BackEnd.repository.ConsultorRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/planilha")
 @CrossOrigin(origins = "*")
 public class PlanilhaController {
 
-    private final ConsultorRepository consultorRepository;
-    private final ClienteRepository clienteRepository;
+    private final ConsultorRepository consultorRepository;
+    private final ClienteRepository clienteRepository;
 
     public PlanilhaController(
             ConsultorRepository consultorRepository,
             ClienteRepository clienteRepository
     ) {
-        this.consultorRepository = consultorRepository;
-        this.clienteRepository = clienteRepository;
+        this.consultorRepository = consultorRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     @PostMapping("/importar")
@@ -38,92 +38,92 @@ public class PlanilhaController {
 
             if (request.getDados() == null || request.getDados().isEmpty()) {
                 return ResponseEntity.badRequest()
-                        .body("A planilha não possui dados.");
+                        .body("A planilha não possui dados.");
             }
 
-            int consultoresCriados = 0;
-            int clientesCriados = 0;
-            int clientesJaExistentes = 0;
+            int consultoresCriados = 0;
+            int clientesCriados = 0;
+            int clientesJaExistentes = 0;
 
             for (Map<String, Object> linha : request.getDados()) {
 
                 String nomeCliente = String.valueOf(
                         linha.getOrDefault("nome_cliente", "")
-                ).trim();
+                ).trim();
 
                 String nomeConsultor = String.valueOf(
                         linha.getOrDefault("consultor", "")
-                ).trim();
+                ).trim();
 
                 if (nomeCliente.isEmpty()) {
                     return ResponseEntity.badRequest()
-                            .body("Existe uma linha sem nome_cliente.");
+                            .body("Existe uma linha sem nome_cliente.");
                 }
 
                 if (nomeConsultor.isEmpty()) {
                     return ResponseEntity.badRequest()
-                            .body("Existe uma linha sem consultor.");
+                            .body("Existe uma linha sem consultor.");
                 }
 
                 // Procura o consultor pelo nome.
                 // Se não existir, cria automaticamente.
                 Consultor consultor = consultorRepository
                         .findByNomeIgnoreCase(nomeConsultor)
-                        .orElse(null);
+                        .orElse(null);
 
                 if (consultor == null) {
 
-                    consultor = new Consultor();
-                    consultor.setNome(nomeConsultor);
+                    consultor = new Consultor();
+                    consultor.setNome(nomeConsultor);
 
                     String matricula = "AUTO-" +
                             UUID.randomUUID()
                                     .toString()
                                     .substring(0, 8)
-                                    .toUpperCase();
+                                    .toUpperCase();
 
-                    consultor.setMatricula(matricula);
+                    consultor.setMatricula(matricula);
 
-                    consultor = consultorRepository.save(consultor);
+                    consultor = consultorRepository.save(consultor);
 
-                    consultoresCriados++;
+                    consultoresCriados++;
                 }
 
                 // Verifica se o cliente já existe para esse consultor.
                 boolean clienteExiste = clienteRepository
                         .findByNomeAndConsultor(nomeCliente, consultor)
-                        .isPresent();
+                        .isPresent();
 
                 if (clienteExiste) {
-                    clientesJaExistentes++;
-                    continue;
+                    clientesJaExistentes++;
+                    continue;
                 }
 
                 // Cria o cliente e relaciona com o consultor.
-                Cliente cliente = new Cliente();
-                cliente.setNome(nomeCliente);
-                cliente.setConsultor(consultor);
+                Cliente cliente = new Cliente();
+                cliente.setNome(nomeCliente);
+                cliente.setConsultor(consultor);
 
-                clienteRepository.save(cliente);
+                clienteRepository.save(cliente);
 
-                clientesCriados++;
+                clientesCriados++;
             }
 
             String resposta =
                     "Planilha processada com sucesso! " +
                     "Consultores criados: " + consultoresCriados +
                     " | Clientes criados: " + clientesCriados +
-                    " | Clientes já existentes: " + clientesJaExistentes;
+                    " | Clientes já existentes: " + clientesJaExistentes;
 
-            return ResponseEntity.ok(resposta);
+            return ResponseEntity.ok(resposta);
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            e.printStackTrace();
 
             return ResponseEntity.internalServerError()
                     .body("Erro ao salvar os dados da planilha: "
-                            + e.getMessage());
+                            + e.getMessage());
         }
     }
 }
