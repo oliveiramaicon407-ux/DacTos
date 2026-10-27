@@ -1,3 +1,4 @@
+
 package CTI.BackEnd.controller;
 
 import CTI.BackEnd.dto.PlanilhaRequestDTO;
@@ -5,6 +6,8 @@ import CTI.BackEnd.model.Cliente;
 import CTI.BackEnd.model.Consultor;
 import CTI.BackEnd.repository.ClienteRepository;
 import CTI.BackEnd.repository.ConsultorRepository;
+import CTI.BackEnd.service.PythonEtlService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +22,16 @@ public class PlanilhaController {
 
     private final ConsultorRepository consultorRepository;
     private final ClienteRepository clienteRepository;
+    private final PythonEtlService pythonEtlService;
 
     public PlanilhaController(
             ConsultorRepository consultorRepository,
-            ClienteRepository clienteRepository
+            ClienteRepository clienteRepository,
+            PythonEtlService pythonEtlService
     ) {
         this.consultorRepository = consultorRepository;
         this.clienteRepository = clienteRepository;
+        this.pythonEtlService = pythonEtlService;
     }
 
     @PostMapping("/importar")
@@ -36,7 +42,8 @@ public class PlanilhaController {
 
         try {
 
-            if (request.getDados() == null || request.getDados().isEmpty()) {
+            if (request.getDados() == null
+                    || request.getDados().isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body("A planilha não possui dados.");
             }
@@ -65,8 +72,6 @@ public class PlanilhaController {
                             .body("Existe uma linha sem consultor.");
                 }
 
-                // Procura o consultor pelo nome.
-                // Se não existir, cria automaticamente.
                 Consultor consultor = consultorRepository
                         .findByNomeIgnoreCase(nomeConsultor)
                         .orElse(null);
@@ -89,7 +94,6 @@ public class PlanilhaController {
                     consultoresCriados++;
                 }
 
-                // Verifica se o cliente já existe para esse consultor.
                 boolean clienteExiste = clienteRepository
                         .findByNomeAndConsultor(nomeCliente, consultor)
                         .isPresent();
@@ -99,7 +103,6 @@ public class PlanilhaController {
                     continue;
                 }
 
-                // Cria o cliente e relaciona com o consultor.
                 Cliente cliente = new Cliente();
                 cliente.setNome(nomeCliente);
                 cliente.setConsultor(consultor);
@@ -124,6 +127,40 @@ public class PlanilhaController {
             return ResponseEntity.internalServerError()
                     .body("Erro ao salvar os dados da planilha: "
                             + e.getMessage());
+        }
+    }
+
+    @PostMapping("/analisar")
+    public ResponseEntity<?> analisarPlanilha(
+            @RequestBody PlanilhaRequestDTO request
+    ) {
+
+        if (request.getDados() == null
+                || request.getDados().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "erro",
+                            "A planilha não possui dados."
+                    ));
+        }
+
+        try {
+
+            Map<?, ?> resultado = pythonEtlService.analisarDados(
+                    request.getDados()
+            );
+
+            return ResponseEntity.ok(resultado);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity.internalServerError()
+                    .body(Map.of(
+                            "erro",
+                            "Não foi possível analisar os dados com o Python."
+                    ));
         }
     }
 }
