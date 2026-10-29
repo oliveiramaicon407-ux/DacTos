@@ -48,7 +48,11 @@ public class SecurityConfig {
                 // Login e cadastro são públicos
                 .requestMatchers(
                     "/auth/login",
-                    "/auth/register"
+                    "/auth/register",
+                    "/swagger-ui.html",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/api/planilha/analisar"
                 ).permitAll()
 
                 // Requisições CORS

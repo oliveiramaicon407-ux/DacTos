@@ -31,6 +31,7 @@ def normalizar_segmento(valor):
     segmentos = {
         "IND": "Indústria",
         "IND.": "Indústria",
+        "VAREJO": "Varejo",
         "INDUSTRIA": "Indústria",
         "COMERCIO": "Comércio",
         "SERVICOS": "Serviços",
