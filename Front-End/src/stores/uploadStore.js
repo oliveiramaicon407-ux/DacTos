@@ -1,3 +1,4 @@
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as XLSX from 'xlsx'
@@ -10,6 +11,7 @@ export const useUploadStore = defineStore('upload', () => {
   const colunas = ref([])
   const erro = ref('')
   const carregando = ref(false)
+  const resultadoAnalise = ref(null)
 
   // GETTERS
 
@@ -40,12 +42,15 @@ export const useUploadStore = defineStore('upload', () => {
   })
 
 
+  // SELECIONAR ARQUIVO
+
   function selecionarArquivo(file) {
 
     if (!file) return
 
     arquivo.value = file
     erro.value = ''
+    resultadoAnalise.value = null
 
     if (!validarArquivo(file)) {
       return
@@ -121,6 +126,8 @@ export const useUploadStore = defineStore('upload', () => {
   }
 
 
+  // VALIDAR ARQUIVO
+
   function validarArquivo(file) {
 
     const nome = file.name.toLowerCase()
@@ -139,6 +146,8 @@ export const useUploadStore = defineStore('upload', () => {
     return true
   }
 
+
+  // TRATAR LINHA
 
   function tratarLinha(linha) {
 
@@ -165,6 +174,8 @@ export const useUploadStore = defineStore('upload', () => {
       'COMERCIO': 'Comércio',
       'COMÉRCIO': 'Comércio',
 
+      'VAREJO': 'Varejo',
+
       'SERVICOS': 'Serviços',
       'SERVIÇOS': 'Serviços',
 
@@ -181,6 +192,7 @@ export const useUploadStore = defineStore('upload', () => {
       mapaSegmentos[segmentoBruto] ||
       'Não Definido'
 
+
     // NÍVEL DO CLIENTE
 
     const nivelFinal = String(
@@ -191,6 +203,7 @@ export const useUploadStore = defineStore('upload', () => {
       .trim()
       .toUpperCase()
 
+
     // RETORNO
 
     return {
@@ -200,6 +213,49 @@ export const useUploadStore = defineStore('upload', () => {
     }
   }
 
+
+  // ANALISAR COM PYTHON
+
+  async function analisarComPython() {
+
+    try {
+
+      const resposta = await api.post(
+        '/api/planilha/analisar',
+        {
+          nomeArquivo: arquivo.value
+            ? arquivo.value.name
+            : 'planilha.xlsx',
+
+          dados: dadosTratados.value
+        }
+      )
+
+      resultadoAnalise.value = resposta.data.analise
+
+      console.log(
+        'Resultado da análise Python:',
+        resultadoAnalise.value
+      )
+
+      return true
+
+    } catch (err) {
+
+      console.error(
+        'Erro ao analisar com Python:',
+        err
+      )
+
+      erro.value =
+        'Não foi possível realizar a análise Python.'
+
+      return false
+    }
+  }
+
+
+  // ENVIAR PARA BACKEND
 
   async function enviarParaBackend() {
 
@@ -234,6 +290,24 @@ export const useUploadStore = defineStore('upload', () => {
         'Planilha enviada e processada com sucesso no Back-End!'
       )
 
+
+      // ANALISAR COM PYTHON APÓS O SALVAMENTO
+
+      const analiseOk = await analisarComPython()
+
+      if (analiseOk) {
+
+        alert(
+          'Análise Python concluída com sucesso!'
+        )
+
+      } else {
+
+        alert(
+          'Planilha salva no Azure, mas a análise Python falhou. Não precisa importar novamente.'
+        )
+      }
+
     } catch (err) {
 
       console.error(
@@ -252,6 +326,7 @@ export const useUploadStore = defineStore('upload', () => {
   }
 
 
+  // LIMPAR
 
   function limpar() {
 
@@ -259,8 +334,10 @@ export const useUploadStore = defineStore('upload', () => {
     dadosTratados.value = []
     colunas.value = []
     erro.value = ''
+    resultadoAnalise.value = null
     carregando.value = false
   }
+
 
   // RETORNO
 
@@ -271,6 +348,7 @@ export const useUploadStore = defineStore('upload', () => {
     colunas,
     erro,
     carregando,
+    resultadoAnalise,
 
     totalClientes,
     totalErros,
@@ -281,6 +359,7 @@ export const useUploadStore = defineStore('upload', () => {
 
     selecionarArquivo,
     enviarParaBackend,
+    analisarComPython,
     limpar
   }
 })
