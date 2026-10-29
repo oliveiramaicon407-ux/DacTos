@@ -22,7 +22,7 @@ public class PythonEtlService {
     }
 
     public Map<?, ?> analisarDados(List<Map<String, Object>> dados) {
-        String url = "http://127.0.0.1:8001/analisar";
+        String url = "http://127.0.0.1:8002/analisar";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
