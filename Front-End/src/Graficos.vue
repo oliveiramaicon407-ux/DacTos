@@ -3,11 +3,12 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useUploadStore } from '../stores/uploadStore'
+import { useUploadStore } from './stores/uploadStore'
 
 const store = useUploadStore()
 
 // RESULTADO DA ANÁLISE PYTHON
+
 
 const analise = computed(() => {
   return store.resultadoAnalise
