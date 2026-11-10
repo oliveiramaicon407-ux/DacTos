@@ -2,6 +2,7 @@ package CTI.BackEnd.model;
 
 import jakarta.persistence.*;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "clientes")
@@ -14,6 +15,7 @@ public class Cliente {
     @Column(nullable = false, length = 150)
     private String nome;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "consultor_id", nullable = false)
     private Consultor consultor;

@@ -1,3 +1,4 @@
+
 package CTI.BackEnd.controller;
 
 import CTI.BackEnd.model.Usuario;
@@ -5,11 +6,13 @@ import CTI.BackEnd.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@SecurityRequirement(name = "bearerAuth")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -35,7 +38,6 @@ public class UsuarioController {
                 .map(usuario -> {
                     usuario.setNome(usuarioDetails.getNome());
                     usuario.setEmail(usuarioDetails.getEmail());
-                    // Adicione os outros campos do seu modelo de Usuário aqui, se houver
                     Usuario atualizado = usuarioService.salvar(usuario);
                     return ResponseEntity.ok(atualizado);
                 })

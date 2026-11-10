@@ -1,3 +1,6 @@
+# ==============================
+# JAVA / MAVEN
+# ==============================
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
@@ -31,3 +34,48 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# ==============================
+# PYTHON
+# ==============================
+.venv/
+.venv-*/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# ==============================
+# VARIAVEIS DE AMBIENTE
+# ==============================
+.env
+.env.*
+!.env.example
+
+# ==============================
+# FRONTEND / NODE / VUE
+# ==============================
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ==============================
+# LOGS
+# ==============================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==============================
+# SISTEMA
+# ==============================
+.DS_Store
+Thumbs.db
+
+# Configuracoes privadas do Spring Boot
+BackEnd/src/main/resources/application.properties

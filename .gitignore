@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Protecao das credenciais do Backend
+BackEnd/src/main/resources/application.properties
