@@ -1,3 +1,4 @@
+
 package CTI.BackEnd.model;
 
 import jakarta.persistence.*;

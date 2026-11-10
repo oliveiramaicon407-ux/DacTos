@@ -9,6 +9,7 @@ const store = useUploadStore()
 
 // RESULTADO DA ANÁLISE PYTHON
 
+
 const analise = computed(() => {
   return store.resultadoAnalise
 })

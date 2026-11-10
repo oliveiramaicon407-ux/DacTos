@@ -1,3 +1,4 @@
+
 package CTI.BackEnd.model;
 
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ public class Cliente {
     @JoinColumn(name = "consultor_id", nullable = false)
     private Consultor consultor;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Contrato> contratos;
 
