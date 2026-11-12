@@ -5,14 +5,29 @@ const store = useUploadStore()
 
 function handleFileChange(event) {
   const file = event.target.files[0]
+
   if (file) {
     store.selecionarArquivo(file)
   }
 }
 
-// Função para disparar o envio para o backend
 const handleEnviarServidor = async () => {
   await store.enviarParaBackend()
+}
+
+async function handleAnalisarPython() {
+  const sucesso = await store.analisarComPython()
+
+  if (sucesso) {
+    alert('Análise Python concluída com sucesso!')
+  }
+}
+
+function formatarMoeda(valor) {
+  return Number(valor || 0).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  })
 }
 </script>
 
@@ -96,6 +111,14 @@ const handleEnviarServidor = async () => {
           <span v-else>Enviar para o Servidor</span>
         </button>
 
+        <button
+  @click="handleAnalisarPython"
+  :disabled="store.carregando || !store.temDados"
+  class="w-full py-2.5 px-4 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+>
+  Analisar com Python
+</button>
+
         <button 
           v-if="store.arquivo"
           @click="store.limpar" 
@@ -130,6 +153,78 @@ const handleEnviarServidor = async () => {
       </div>
       <p class="text-[10px] text-zinc-500 mt-3 text-right">Exibindo os primeiros registros de {{ store.totalClientes }} processados.</p>
     </div>
+
+
+<!-- RESULTADO DA ANÁLISE PYTHON -->
+<div
+  v-if="store.resultadoAnalise"
+  class="rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl space-y-6"
+>
+  <div>
+    <h2 class="text-lg font-bold text-white">
+      Resultado da Análise Python
+    </h2>
+    <p class="text-xs text-zinc-400 mt-1">
+      Indicadores calculados pela API Python no Azure.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div class="bg-zinc-900 rounded-xl p-4">
+      <p class="text-xs text-zinc-400">Total de clientes</p>
+      <p class="text-2xl font-bold text-blue-400">
+        {{ store.resultadoAnalise.total_clientes }}
+      </p>
+    </div>
+
+    <div class="bg-zinc-900 rounded-xl p-4">
+      <p class="text-xs text-zinc-400">Faturamento total</p>
+      <p class="text-xl font-bold text-emerald-400">
+        {{ formatarMoeda(store.resultadoAnalise.faturamento_total) }}
+      </p>
+    </div>
+
+    <div class="bg-zinc-900 rounded-xl p-4">
+      <p class="text-xs text-zinc-400">Faturamento médio</p>
+      <p class="text-xl font-bold text-purple-400">
+        {{ formatarMoeda(store.resultadoAnalise.faturamento_medio) }}
+      </p>
+    </div>
+
+    <div class="bg-zinc-900 rounded-xl p-4">
+      <p class="text-xs text-zinc-400">Clientes nível A</p>
+      <p class="text-2xl font-bold text-amber-400">
+        {{ store.resultadoAnalise.clientes_nivel_a }}
+      </p>
+    </div>
+
+  </div>
+
+  <div class="bg-zinc-900 rounded-xl p-4">
+    <p class="text-xs text-zinc-400 mb-1">Segmento principal</p>
+    <p class="text-lg font-bold text-white">
+      {{ store.resultadoAnalise.segmento_principal }}
+    </p>
+  </div>
+
+  <div>
+    <h3 class="text-sm font-semibold text-white mb-3">
+      Insights da análise
+    </h3>
+
+    <ul class="space-y-2">
+      <li
+        v-for="(insight, index) in store.resultadoAnalise.insights"
+        :key="index"
+        class="bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-300"
+      >
+        {{ insight }}
+      </li>
+    </ul>
+  </div>
+</div>
+
 
   </div>
 </template>
