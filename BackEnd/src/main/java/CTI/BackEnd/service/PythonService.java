@@ -16,7 +16,7 @@ public class PythonService {
     }
 
     public Map<?, ?> verificarSaude() {
-        String url = "http://127.0.0.1:8000/saude";
+        String url = "https://dactos-python-api-h6bjghgvf2cxabag.southafricanorth-01.azurewebsites.net/saude";
 
         return restTemplate.getForObject(url, Map.class);
     }
