@@ -1,8 +1,12 @@
+
 package CTI.BackEnd.config;
 
+import CTI.BackEnd.service.AutenticacaoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,30 +26,26 @@ import java.util.List;
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    private final AutenticacaoService autenticacaoService;
 
-    public SecurityConfig(SecurityFilter securityFilter) {
+    public SecurityConfig(
+            SecurityFilter securityFilter,
+            AutenticacaoService autenticacaoService
+    ) {
         this.securityFilter = securityFilter;
+        this.autenticacaoService = autenticacaoService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            // CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-            // API REST não utiliza CSRF
             .csrf(csrf -> csrf.disable())
-
-            // JWT não utiliza sessão
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-
-            // Regras de acesso
             .authorizeHttpRequests(auth -> auth
-
-                // Login e cadastro são públicos
                 .requestMatchers(
                     "/auth/login",
                     "/auth/register",
@@ -55,18 +55,13 @@ public class SecurityConfig {
                     "/api/planilha/analisar",
                     "/api/python/saude"
                 ).permitAll()
-
-                // Requisições CORS
                 .requestMatchers(
                     org.springframework.http.HttpMethod.OPTIONS,
                     "/**"
                 ).permitAll()
-
-                // Demais endpoints precisam de autenticação
                 .anyRequest().authenticated()
             )
-
-            // Coloca nosso filtro JWT antes do filtro padrão de autenticação
+            .authenticationProvider(authenticationProvider(passwordEncoder()))
             .addFilterBefore(
                 securityFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -75,62 +70,53 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * AuthenticationManager utilizado pelo AuthController.
-     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration
     ) throws Exception {
-
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    /**
-     * Criptografia das senhas.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    /**
-     * Configuração do CORS para o Vue/Vite.
-     */
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            PasswordEncoder passwordEncoder
+    ) {
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(autenticacaoService);
+
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return provider;
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-            List.of("http://localhost:5173",
-        "https://dac-tos.vercel.app")
-        );
-
-        configuration.setAllowedMethods(
             List.of(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "PATCH",
-                "OPTIONS"
+                "http://localhost:5173",
+                "https://dac-tos.vercel.app"
             )
         );
 
-        configuration.setAllowedHeaders(
-            List.of("*")
+        configuration.setAllowedMethods(
+            List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         );
 
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+                new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration(
-            "/**",
-            configuration
-        );
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
