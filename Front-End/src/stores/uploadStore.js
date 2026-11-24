@@ -11,6 +11,7 @@ export const useUploadStore = defineStore('upload', () => {
   const colunas = ref([])
   const erro = ref('')
   const carregando = ref(false)
+  const analisando = ref(false)
   const resultadoAnalise = ref(null)
 
   // GETTERS
@@ -218,6 +219,8 @@ export const useUploadStore = defineStore('upload', () => {
 
   async function analisarComPython() {
 
+    analisando.value = true
+
     try {
 
       const resposta = await api.post(
@@ -251,6 +254,11 @@ export const useUploadStore = defineStore('upload', () => {
         'Não foi possível realizar a análise Python.'
 
       return false
+
+    } finally {
+
+      analisando.value = false
+
     }
   }
 
@@ -336,6 +344,7 @@ export const useUploadStore = defineStore('upload', () => {
     erro.value = ''
     resultadoAnalise.value = null
     carregando.value = false
+    analisando.value = false
   }
 
 
@@ -348,6 +357,7 @@ export const useUploadStore = defineStore('upload', () => {
     colunas,
     erro,
     carregando,
+    analisando,
     resultadoAnalise,
 
     totalClientes,
