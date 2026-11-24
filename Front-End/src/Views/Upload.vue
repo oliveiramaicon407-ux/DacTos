@@ -113,11 +113,24 @@ function formatarMoeda(valor) {
 
         <button
   @click="handleAnalisarPython"
-  :disabled="store.carregando || !store.temDados"
-  class="w-full py-2.5 px-4 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors"
+  :disabled="store.carregando || store.analisando || !store.temDados"
+  class="w-full py-2.5 px-4 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center justify-center gap-2"
 >
-  Analisar com Python
+  <span v-if="store.analisando" class="animate-pulse">
+    Analisando...
+  </span>
+
+  <span v-else>
+    Analisar com Python
+  </span>
 </button>
+
+<p
+  v-if="store.analisando"
+  class="text-xs text-blue-400 text-center animate-pulse"
+>
+  O Python está processando seus dados. Aguarde...
+</p>
 
         <button 
           v-if="store.arquivo"
